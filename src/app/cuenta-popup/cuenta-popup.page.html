@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col col-9 text-left padding>
+        <ion-title>Cambiar cuenta bancaria</ion-title>
+        <div class="child-name">{{user.name}}</div>
+      </ion-col>
+      <ion-col col-3 class="p-t-10 p-r-20" text-right>
+        <ion-icon name="close" class="pointer close-icon" (click)="closeModal()"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <p style="padding-left: 10px;"><strong>Cuenta Bancaria:</strong></p> 
+
+  <p style="text-align: center;">{{user['bank'].acc_number_fmt}}</p>
+
+  <p style="padding-top: 30px; padding-left: 10px;"><strong>Nueva cuenta bancaria (IBAN):</strong></p> 
+
+  <ion-grid>
+    <ion-row justify-content-center>
+      <ion-col size="2">
+        <ion-input (paste)="onPaste($event)" type="text" maxlength="4" [(ngModel)]="input1"></ion-input>
+      </ion-col>
+      <ion-col size="2">
+        <ion-input type="text" maxlength="4" [(ngModel)]="input2"></ion-input>
+      </ion-col>      
+      <ion-col size="2">
+        <ion-input type="text" maxlength="4" [(ngModel)]="input3"></ion-input>
+      </ion-col>      
+      <ion-col size="2">
+        <ion-input type="text" maxlength="4" [(ngModel)]="input4"></ion-input>
+      </ion-col>      
+      <ion-col size="2">
+        <ion-input type="text" maxlength="4" [(ngModel)]="input5"></ion-input>
+      </ion-col>      
+      <ion-col size="2">
+        <ion-input type="text" maxlength="4" [(ngModel)]="input6"></ion-input>
+      </ion-col>         
+    </ion-row>
+  </ion-grid>
+    
+</ion-content>
+
+<ion-footer>
+  <div style="text-align: center;padding-bottom:20px;">
+  <ion-button size="medium" style="display:inline-block;width: 30%;margin:auto;margin-top: 10px;--color:#ffffff;--background:#00584c;"
+    (click)="accept()" expand="block">Guardar</ion-button>
+  <ion-button size="medium" style="display:inline-block;width: 30%;margin:auto;margin-top: 10px;--color:#00584c;--background:#ffffff;"
+    (click)="closeModal()" expand="block">Cancelar</ion-button>
+  </div>
+</ion-footer>

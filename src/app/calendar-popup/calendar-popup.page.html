@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col col-9 text-left padding>
+        <ion-title>Seleccionar fecha</ion-title>
+      </ion-col>
+      <ion-col col-3 class="p-t-10 p-r-20" text-right>
+        <ion-icon name="close" class="pointer close-icon" (click)="closeModal()"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-row class="p-t-0">
+      <ion-col class="p-t-0">
+        <ion-calendar [(ngModel)]="dateYMD" (onChange)="onChange($event)"
+          [type]="type" [format]="'YYYY-MM-DD'" [options]="optionsRange">
+        </ion-calendar>
+
+      </ion-col>
+    </ion-row>
+
+</ion-content>

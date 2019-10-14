@@ -1,0 +1,122 @@
+// http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+
+@import '~ion4-calendar/dist/index.scss';
+
+
+.infotext {
+    font-size: 18px;
+    color: rgb(78, 78, 78);
+}
+
+ion-toolbar{
+  --background: #00584c;
+  color: white !important;
+}
+
+ion-back-button{
+  color: white !important;
+}
+
+.close-icon
+{
+
+  color: white !important;
+  padding-top: 10px;
+  font-size: 24px;
+  border-radius: 100%;
+  font-weight: bold;
+}  
+
+.exit-icon
+{
+  color: white !important;
+  font-size: 40px;
+  font-weight: bold;
+  padding-top: 5px;
+}  
+
+.edit-icon
+{
+  color: #00584c !important;
+  font-size: 28px;
+  font-weight: bold;
+  padding-top: 5px;
+}  
+
+.divided-line
+{
+  width: 100%!important;
+  height: 1px!important;
+  background-color: rgb(131, 131, 131)!important;
+}
+
+ion-calendar-month .primary button.days-btn small{
+  font-size: 14px !important;
+  font-weight: bold;
+}
+
+ion-calendar-month .primary .days .on-selected {
+  background-color:  green!important;
+}  
+
+ion-calendar-week .week-toolbar {
+  height: 32px!important;
+  --background: #f4f4f4;  
+}
+
+ion-calendar-week .week-title.transparent{
+  padding: 0px 0px!important;
+}
+
+button[disabled] p{
+  color: #b3b3b3!important;
+}
+
+.child-name {
+  font-size: 14px;
+  color: #fff;
+  padding-left: 12px;
+}
+.p-t-0{
+  padding-top: 0px!important;
+}
+
+.child-button {
+  --color:#ffffff;
+  --background:#00584c;
+  width: 250px!important;
+  text-align: center!important;
+}
+
+.icon-button {
+  --color:#ffffff;
+  --background:#00584c;
+  text-align: center!important;
+}
+
+
+.pointer{
+  cursor: pointer;
+}
+
+ion-card-subtitle{
+  padding-top: 10px!important;
+}
+
+.controldate {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 18px;
+  color: #488aff;    
+}

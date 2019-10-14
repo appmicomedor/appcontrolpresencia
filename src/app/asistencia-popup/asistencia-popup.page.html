@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col col-9 text-left padding>
+        <ion-title>Configuración de asistencia</ion-title>
+        <div class="child-name">{{child.name}}</div>
+      </ion-col>
+      <ion-col col-3 class="p-t-10 p-r-20" text-right>
+        <ion-icon name="close" class="pointer close-icon" (click)="closeModal()"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-row>
+      <ion-col col-12 class="bigtxt">
+        <span>Atención: El cambio de asistencia será efectivo a partir del próximo mes.</span>
+      </ion-col>
+    </ion-row>
+
+    <ion-list>
+      <ion-radio-group allow-empty-selection="false" name="radio-group">
+
+
+      <ion-item (ionSelect)="radioSemana($event)">
+        <ion-label>Semana completa</ion-label>
+        <ion-radio value="semana" checked="{{semana}}"></ion-radio>
+      </ion-item>
+  
+      <ion-item (ionSelect)="radioEsporadico($event)">
+        <ion-label>Esporádico</ion-label>
+        <ion-radio value="esporadico" checked="{{esporadico}}"></ion-radio>
+      </ion-item>
+  
+      <ion-item (ionSelect)="radioPordias($event)">
+        <ion-label>Por días</ion-label>
+        <ion-radio value="pordias" checked="{{pordias}}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+
+  <ion-list *ngIf="pordias" style="padding-left:30px;">
+    <ion-item *ngFor="let entry of dias">
+      <ion-label>{{entry.val}}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <div style="text-align: center;padding-bottom:20px;">
+  <ion-button size="medium" style="display:inline-block;width: 30%;margin:auto;margin-top: 10px;--color:#ffffff;--background:#00584c;"
+    (click)="accept()" expand="block">Guardar</ion-button>
+  <ion-button size="medium" style="display:inline-block;width: 30%;margin:auto;margin-top: 10px;--color:#00584c;--background:#ffffff;"
+    (click)="closeModal()" expand="block">Cancelar</ion-button>
+  </div>
+</ion-footer>

@@ -1,0 +1,41 @@
+<ion-header>
+  <!--ion-toolbar>
+    <ion-title>Sign In</ion-title>
+  </ion-toolbar>-->
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row justify-content-center>
+      <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+        <div text-center>
+          <img src="assets/image/control_logo.png" style="width: 50%;">
+        </div>
+        <!--ion-toolbar >
+          <ion-segment color="primary" [(ngModel)]="storeFilter" (ionChange)="filterStores($event)">
+            <ion-segment-button value="offline">
+                Usuarios
+            </ion-segment-button>
+            <ion-segment-button value="online">
+                Profesionales
+            </ion-segment-button>
+          </ion-segment>
+        </ion-toolbar-->
+        <div class="infotext" padding>Introducir su email y contraseña para la gestión del control de presencia a los comedores</div>
+        <div padding>
+          <ion-item>
+            <ion-input type="text" [(ngModel)]="username" placeholder="Email"></ion-input>
+          </ion-item>
+  
+          <ion-item>
+            <ion-input type="password" [(ngModel)]="password" placeholder="Contraseña"></ion-input>
+          </ion-item>
+        </div>
+  
+        <div padding>
+          <ion-button style="--background:#00584c;" size="large" (click)="signIn()"  expand="block">Entrar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

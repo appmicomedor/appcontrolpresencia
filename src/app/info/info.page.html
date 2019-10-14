@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col size="10" text-center>
+        <img src="assets/image/header.png" style="z-index:11;width: 200px;margin-left:25%;">
+      </ion-col>
+      <ion-col size="2" class="p-r-20" text-right>
+        <ion-icon name="exit" class="pointer exit-icon" (click)="cerrarSesion()"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="user == null" style="text-align: center;padding-top: 100px;">
+    <p style="font-size: 30px;">No Información</p>
+    <p style="font-weight: normal;font-size:12px;text-align: center;">Versión: {{app_version}}</p>    
+  </div>
+  <div *ngIf="user != null">
+    <div class="parent" style="padding-left: 20px;">
+      <p style="font-weight: bold;font-size:20px;text-align: center;">Control de presencia APP</p>
+      <p style="font-weight: normal;font-size:12px;text-align: center;">Versión: {{app_version}}</p>
+    </div>
+
+    <div style="font-size: 20px;font-weight: bold;padding-left: 20px;padding-top: 20px;">Seleccionar fecha</div>
+
+    <ion-row>
+      <ion-col size="9" style="padding-top:10px;">
+        <div class="controldate">{{dateFmt}}</div>
+      </ion-col>
+      <ion-col size="3" class="p-t-0 p-b-0">
+        <ion-button size="medium" style="--color:#ffffff;--background:#00584c;" (click)="openCalendar()"><ion-icon name="calendar"></ion-icon></ion-button>
+      </ion-col>      
+    </ion-row>
+
+    <div style="font-size: 20px;font-weight: bold;padding-left: 20px;padding-top: 40px;">Centros</div>
+    <div class="child">
+      <div *ngIf="user['schools'].length > 0">
+          <ion-card *ngFor="let school of user['schools']">
+            <ion-card-header>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-card-title>{{school.name}}</ion-card-title>               
+                </ion-col>
+              </ion-row>
+            </ion-card-header>
+          
+            <ion-card-content text-center>
+              <ion-button size="medium" class="child-button" (click)="openSchool(school)">Control de presencia</ion-button>                  
+            </ion-card-content>
+          </ion-card>
+      </div>
+      <div *ngIf="child_length == 0" style="text-align: center;padding-top: 20px;">
+        No tiene escuelas registradas
+      </div>
+    </div>
+  </div>
+
+</ion-content>
