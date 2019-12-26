@@ -104,4 +104,15 @@ export class InfoPage implements OnInit {
     };
     this.router.navigate(['control'], navigationExtras);
   }
+
+  openGroups(school){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        school: school,
+        date: this.date,
+        dateFmt: this.dateFmt
+      }
+    };
+    this.router.navigate(['groups'], navigationExtras);    
+  }
 }
