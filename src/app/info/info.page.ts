@@ -106,13 +106,13 @@ export class InfoPage implements OnInit {
   }
 
   openGroups(school){
-    let navigationExtras: NavigationExtras = {
+    /*let navigationExtras: NavigationExtras = {
       state: {
         school: school,
         date: this.date,
         dateFmt: this.dateFmt
       }
     };
-    this.router.navigate(['groups'], navigationExtras);    
+    this.router.navigate(['groups'], navigationExtras);   */ 
   }
 }
