@@ -1,0 +1,79 @@
+<ion-header>
+  <!-- <ion-toolbar>
+    <ion-title>albaranes</ion-title>
+  </ion-toolbar> -->
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{getAlbaranPayload.dbDate}}</ion-title> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="filteredArray?.length > 0">
+    <ion-card *ngFor="let item of filteredArray">
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Plato</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.plato.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Menu</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.menu.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Arranque</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.arranque.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Fecha elaboración</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.fechaelaboracion.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Fecha consumo</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.fechaconsumo.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Ruta</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.ruta.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Nombre centro</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.nombrecentro.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Barquetas XL</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.barqxl.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Barquetas L</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.barql.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Barquetas M</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.barqm.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Barquetas S</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.barqs.$t}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="albaranes-page-item-name" size="6">Barquetas O</ion-col>
+            <ion-col class="albaranes-page-item-value" size="6"> {{item.barqo.$t}}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-content padding *ngIf="filteredArray?.length == 0">
+    <ion-grid style="height: 100%">
+        <ion-row justify-content-center align-items-center style="height: 100%; flex-direction: column">
+            <p style="color: #00584c;">No hay albaranes para la fecha seleccionada</p>
+          </ion-row>
+        </ion-grid>
+  </ion-content>
+</ion-content>

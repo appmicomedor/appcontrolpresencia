@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { InfoPage } from './info.page';
-
-import { CalendarPopupPageModule } from './../calendar-popup/calendar-popup.module';
+import { ManageGroupPage } from './manage-group.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: InfoPage
+    component: ManageGroupPage
   }
 ];
 
@@ -21,10 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    ReactiveFormsModule,
-    CalendarPopupPageModule,   
     RouterModule.forChild(routes)
   ],
-  declarations: [InfoPage]
+  declarations: [ManageGroupPage]
 })
-export class InfoPageModule {}
+export class ManageGroupPageModule {}

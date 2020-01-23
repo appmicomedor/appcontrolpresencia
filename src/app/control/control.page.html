@@ -13,11 +13,15 @@
     <ion-card-subtitle><span class="controldate">{{dateFmt}}</span></ion-card-subtitle>    
   </ion-card-header>
 
-  <div *ngIf="control?.length == 0" style="text-align: center; padding: 100px 20px;">
+  <ion-searchbar placeholder="Buscar" (ionInput)="searchFunc($event.target.value)"></ion-searchbar>
+
+  <ion-button (click)="gotoManageGroupPage()" expand="full">Edit Grupo</ion-button>
+
+  <div *ngIf="displayingControl?.length == 0" style="text-align: center; padding: 100px 20px;">
     <p style="font-size: 24px;">No hay comensales</p>
   </div>
-  <div *ngIf="control?.length > 0" >
-    <ion-row *ngFor="let student of control; let i = index" [class]="student.class" (click)="changeControl(student, i)">
+  <div *ngIf="displayingControl?.length > 0" >
+    <ion-row *ngFor="let student of displayingControl; let i = index" [class]="student.class" (click)="changeControl(student, i)">
       <ion-col size="12">
         <div class="asistencia-nombre">{{student.nombre}}</div>               
       </ion-col>

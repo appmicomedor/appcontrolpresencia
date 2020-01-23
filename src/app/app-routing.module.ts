@@ -11,6 +11,8 @@ const routes: Routes = [
   { path: 'asistencia-popup', loadChildren: './asistencia-popup/asistencia-popup.module#AsistenciaPopupPageModule' },
   { path: 'control', loadChildren: './control/control.module#ControlPageModule' },
   { path: 'cuenta-popup', loadChildren: './cuenta-popup/cuenta-popup.module#CuentaPopupPageModule' },
+  { path: 'albaranes', loadChildren: './albaranes/albaranes.module#AlbaranesPageModule' },
+  { path: 'manage-group', loadChildren: './manage-group/manage-group.module#ManageGroupPageModule' },
   
 ];
 @NgModule({

@@ -6,6 +6,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { UserService } from '../provider/user.service';
 import { UtilService } from '../provider/util.service';
 import { CalendarPopupPage } from '../calendar-popup/calendar-popup.page'
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-info',
@@ -18,7 +19,10 @@ export class InfoPage implements OnInit {
   app_version: string;
 
   date: Date;
+  currentDate;
+  dbDate;
   dateFmt: string;
+  uploadForm: FormGroup; 
 
   constructor(
     private route: ActivatedRoute,
@@ -29,8 +33,15 @@ export class InfoPage implements OnInit {
     private utilService: UtilService,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController,
+    private formBuilder: FormBuilder,
   ) {
+
+    this.uploadForm = this.formBuilder.group({
+      profile: ['']
+    });
+
     this.date = new Date();
+    this.currentDate = this.formatDate(this.date);
     this.dateFmt = this.utilService.presentDate(this.date);
 
     this.route.queryParams.subscribe(params => {
@@ -85,8 +96,10 @@ export class InfoPage implements OnInit {
     });
  
     modal.onDidDismiss().then((data) => {
+      console.log(data);
       if (data && data.data) {
         this.date = new Date(data.data);
+        this.dbDate = this.formatDate(data.data);
         this.dateFmt = this.utilService.presentDate(this.date);
       }
     });
@@ -95,6 +108,7 @@ export class InfoPage implements OnInit {
   }
 
   openSchool(school){
+    console.log(school);
     let navigationExtras: NavigationExtras = {
       state: {
         school: school,
@@ -105,14 +119,91 @@ export class InfoPage implements OnInit {
     this.router.navigate(['control'], navigationExtras);
   }
 
-  openGroups(school){
-    /*let navigationExtras: NavigationExtras = {
+  gotoAlbaranes(school, date) {
+    console.log(school);
+    let navigationExtras: NavigationExtras = {
       state: {
         school: school,
-        date: this.date,
-        dateFmt: this.dateFmt
+        date: date,
+        currentDate: this.currentDate
       }
     };
-    this.router.navigate(['groups'], navigationExtras);   */ 
+    this.router.navigate(['albaranes'], navigationExtras);
   }
+
+  formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
+openGroups(school){
+  /*let navigationExtras: NavigationExtras = {
+    state: {
+      school: school,
+      date: this.date,
+      dateFmt: this.dateFmt
+    }
+  };
+  this.router.navigate(['groups'], navigationExtras);   */ 
+}
+
+readerResult;
+
+samplePayload = {
+  readerFile:undefined,
+  password: 'ODOO_PWD'
+};
+
+fileUploading($event) {
+  // console.log($event.target.files[0]);
+  const file: File = $event.target.files[0];
+
+
+  const myReader: FileReader = new FileReader();
+
+  myReader.onloadend = (e) => {
+    console.log('inside reader result');
+    this.readerResult = myReader.result;
+    this.samplePayload.readerFile = myReader.result;
+    // console.log(this.readerResult);
+    // this.invoiceDetails.poFiles = myReader.result;
+    
+
+  };
+
+    myReader.readAsDataURL(file);
+    // this.samplePayload.readerFile = this.readerResult;
+  
+
+}
+
+btnClickSam() {
+  this.sampleSubmit(this.samplePayload);
+}
+
+onFileSelect(event) {
+  if (event.target.files.length > 0) {
+    const file = event.target.files[0];
+    this.uploadForm.get('profile').setValue(file);
+  }
+}
+
+sampleSubmit(pl) {
+  // const formData = new FormData();
+  // formData.append('file', this.uploadForm.get('profile').value);
+
+  this.httpService.request('POST', 'save_albaran', pl).subscribe( res => {
+    console.log(res);
+  });
+}
+
 }

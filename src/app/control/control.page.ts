@@ -21,6 +21,7 @@ export class ControlPage implements OnInit {
   dateFmt: string;
 
   control: any;
+  displayingControl: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,6 +68,8 @@ export class ControlPage implements OnInit {
       if (!response['error']) {   
         this.control = response['data'];
 
+        console.log(this.control);
+
         // Sort by name
         this.control.sort(function (a, b) {
           let name_a = a['student_name'].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -75,6 +78,8 @@ export class ControlPage implements OnInit {
           if(name_a > name_b) { return 1; }
           return 0;
       });
+
+        console.log(this.control);
 
         let dia = 'dia' + this.date.getDate();
 
@@ -94,16 +99,24 @@ export class ControlPage implements OnInit {
               this.control[i].code = 3;
             if (this.control[i].asistencia == 'F')
               this.control[i].code = 2;
+
           }
 
           //console.log('control ' + JSON.stringify(this.control[i]));
         }
+
+        this.displayingControl = this.control;
+        console.log(this.displayingControl);
       }
     });
   }
 
   changeControl(student, index){
     if (student.asistencia=='A' || student.asistencia=='J' || student.asistencia=='F'){
+
+      console.log('student isss');
+      console.log(student);
+      console.log('student isss');
 
       let daym = this.date.getDate();
       let dayi = 'dia' + String(daym);  
@@ -142,12 +155,20 @@ export class ControlPage implements OnInit {
 
   updateStudent(student, i){
 
-    this.control[i].asistencia = student.asistencia;
-    this.control[i].code = student.code;
-    this.control[i].class = 'asistencia';
-    if (this.control[i].asistencia=='A' || this.control[i].asistencia=='J' || this.control[i].asistencia=='F'){
-      this.control[i].class += '-' + this.control[i].asistencia + '  md hydrated';
+    // this.control[i].asistencia = student.asistencia;
+    // this.control[i].code = student.code;
+    // this.control[i].class = 'asistencia';
+    // if (this.control[i].asistencia=='A' || this.control[i].asistencia=='J' || this.control[i].asistencia=='F'){
+    //   this.control[i].class += '-' + this.control[i].asistencia + '  md hydrated';
+    // }
+
+    this.displayingControl[i].asistencia = student.asistencia;
+    this.displayingControl[i].code = student.code;
+    this.displayingControl[i].class = 'asistencia';
+    if (this.displayingControl[i].asistencia=='A' || this.displayingControl[i].asistencia=='J' || this.displayingControl[i].asistencia=='F'){
+      this.displayingControl[i].class += '-' + this.displayingControl[i].asistencia + '  md hydrated';
     }
+
   }
 
   goBack(){
@@ -168,5 +189,29 @@ export class ControlPage implements OnInit {
     this.toastCtrl.dismiss();
     this.toast = null;
   }  
+
+  searchFunc(event) {
+    if(event.length == 0) {
+      this.displayingControl = this.control;
+      // this.getControl();
+    } else {
+      let newArr = this.control.filter( (student) => {
+        return student.student_name.toLowerCase().includes(event.toLowerCase());
+      } );
+      console.log(newArr);
+      this.displayingControl = newArr;
+    }
+    
+  }
+
+  gotoManageGroupPage() {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        studentList: this.displayingControl,
+        school: this.school
+      }
+    };
+    this.router.navigate(['manage-group'], navigationExtras);
+  }
 
 }
