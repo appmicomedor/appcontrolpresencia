@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1000301" id="io.controlPresenciaComedor.app" ios-CFBundleVersion="1.0.3.1" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="100041" id="io.controlPresenciaComedor.app" ios-CFBundleVersion="1.0.4.1" version="1.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>AppControlPresencia</name>
-    <description>Control de presencia al comedor app.</description>
+    <description>Gestión de caterings app.</description>
     <author email="empresas@lidersoftware.com" href="http://lidersoftware.com/">Lider Software Team</author>
     <content src="index.html" />
     <access origin="*" />

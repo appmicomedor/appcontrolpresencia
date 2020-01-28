@@ -7,11 +7,16 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{getAlbaranPayload.dbDate}}</ion-title> 
+    <ion-title>Albaranes</ion-title> 
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card-header>
+    <ion-card-title>{{getAlbaranPayload.school}}</ion-card-title>
+    <ion-card-subtitle><span class="controldate">{{dateFmt}}</span></ion-card-subtitle>    
+  </ion-card-header>
+
   <div *ngIf="filteredArray?.length > 0">
     <ion-card *ngFor="let item of filteredArray">
       <ion-card-content>

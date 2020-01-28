@@ -2,6 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../provider/user.service';
 import { AuthHttpService } from '../auth/auth-http.service';
+import { UtilService } from '../provider/util.service';
 
 @Component({
   selector: 'app-albaranes',
@@ -11,6 +12,8 @@ import { AuthHttpService } from '../auth/auth-http.service';
 export class AlbaranesPage implements OnInit {
 
   getAlbaranPayload = {
+    username: '',
+    password: '',
     school:'',
     dbDate:'',
     code:'',
@@ -22,12 +25,15 @@ export class AlbaranesPage implements OnInit {
   companyCode: String;
   queryDate;
 
+  dateFmt: string;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private zone: NgZone,
     private userService: UserService,
     private authHttpService:AuthHttpService,
+    private utilService: UtilService,       
   ) {
 
     this.route.queryParams.subscribe(params => {
@@ -42,9 +48,12 @@ export class AlbaranesPage implements OnInit {
 
           if(this.getAlbaranPayload.dbDate == undefined) {
             this.queryDate = this.getAlbaranPayload.currentDate;
+            this.getAlbaranPayload.dbDate = this.queryDate;
           } else {
             this.queryDate = this.getAlbaranPayload.dbDate;
           }
+
+          this.dateFmt = this.utilService.presentDate(this.queryDate);
 
           this.authHttpService.request('GET','get_albaran?date='+this.queryDate+'&code='+this.getAlbaranPayload.code, this.getAlbaranPayload)
           .subscribe( res => {
@@ -55,8 +64,7 @@ export class AlbaranesPage implements OnInit {
               });
             } catch {
               this.filteredArray = [];
-            }
-            
+            }            
           });
 
         });

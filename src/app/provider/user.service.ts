@@ -36,4 +36,8 @@ export class UserService {
   isAuthenticated() {
     return this.isAuth;
   }
+
+  getVersion(){
+    return '1.0.4';
+  }  
 }

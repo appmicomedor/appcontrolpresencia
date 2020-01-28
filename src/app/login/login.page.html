@@ -35,6 +35,9 @@
         <div padding>
           <ion-button style="--background:#00584c;" size="large" (click)="signIn()"  expand="block">Entrar</ion-button>
         </div>
+        <div padding>
+          <p style="font-weight: normal;font-size:12px;text-align: center;">Versión: {{userService.getVersion()}}</p>
+        </div>        
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -19,21 +19,25 @@
   <br>
   <div *ngIf="user != null">
     <div class="parent" style="padding-left: 20px;">
-      <p style="font-weight: bold;font-size:20px;text-align: center;">Control de presencia APP</p>
+      <p style="font-weight: bold;font-size:20px;text-align: center;">App gestión de caterings</p>
       <p style="font-weight: normal;font-size:12px;text-align: center;">Versión: {{app_version}}</p>
     </div>
 
     <ion-card>
       <ion-card-header>
-        Subir Albaran
+        <div style="font-size: 20px;font-weight: bold;padding-left: 20px;padding-top: 20px;">Subir albarán</div>
       </ion-card-header>
       <ion-card-content style="padding-top: 0px;">
-        <input class="custom-file-input" type="file" (change)="fileUploading($event)">
-        <!-- <button class="btn btn-info" (click)="btnClickSam()">click</button> -->
-        <ion-button color="primary" (click)="btnClickSam()">Upload</ion-button>
+        <ion-row>
+          <ion-col size="9" style="padding-top: 10px;">
+            <input class="custom-file-input" type="file" (change)="fileUploading($event)">
+          </ion-col>
+          <ion-col size="3" >
+            <ion-button color="primary" (click)="btnClickSam()">Subir</ion-button>
+          </ion-col>
+        </ion-row>
       </ion-card-content>
     </ion-card>
-
 
     <!-- <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">     
       <div>
@@ -71,7 +75,6 @@
           
             <ion-card-content text-center>
               <ion-button size="medium" class="child-button" (click)="openSchool(school)">Control de presencia</ion-button>                  
-              <ion-button size="medium" class="child-button" (click)="openGroups(school)">Editor de grupos</ion-button> 
               <ion-button size="medium" class="child-button" (click)="gotoAlbaranes(school, dbDate)">Albaranes de Entrega</ion-button>                  
             </ion-card-content>
           </ion-card>

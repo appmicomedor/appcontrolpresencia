@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { IonicStorageModule } from '@ionic/storage';
 import { UserService } from './provider/user.service';
 import { environment } from '../environments/environment';
+import { StudentNamePipe } from './pipes/student-name.pipe';
 
 @NgModule({
   declarations: [AppComponent],

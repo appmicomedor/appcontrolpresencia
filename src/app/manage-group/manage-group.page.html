@@ -1,10 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>manage-group</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Editar Grupos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<!-- <ion-content>
   <ion-card>
     <ion-card-header style="padding-bottom: 0px !important; text-align: center;">
       Create New Group
@@ -23,7 +26,6 @@
       Add students to groups
     </ion-card-header>
     <ion-card-content>
-      <!-- <ion-button expand="block">Create new group</ion-button> -->
       <ion-item>
         <ion-label>Student</ion-label>
         <ion-select [(ngModel)]="addStudentToGroupPayload.studentId" placeholder="Select Student">
@@ -41,4 +43,83 @@
       <ion-button (click)="addToGroup()" expand="block">Add to the group</ion-button>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-card-header style="padding-bottom: 0px !important; text-align: center;">
+      Add students to groups
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Student</ion-label>
+        <ion-select (ionChange)="removeStudentSelect()" [(ngModel)]="removeStudentFromGroupPayload.studentId" placeholder="Select Student">
+          <ion-select-option *ngFor="let student of studensWithGroupList" value="{{student.id}}">{{student.student_name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content> -->
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col style="display:flex!important; align-items: center!important;">
+        <div>
+          Grupos
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          <ion-button (click)="newGroupPopUp()">
+            Crear grupo
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- <ion-row *ngFor="let group of groupList">
+      <ion-col style="display:flex!important; align-items: center!important;" size=4>
+        <div>
+          {{group.groupId}}
+        </div>
+      </ion-col>
+      <ion-col>
+        <ion-row> 
+          <ion-button color="primary"><ion-icon name="create"></ion-icon></ion-button>
+          <ion-button color="primary"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button color="primary"><ion-icon name="add"></ion-icon></ion-button>
+        </ion-row>
+      </ion-col>
+    </ion-row> -->
+
+  </ion-grid>
+
+  <ion-item-group *ngFor="let group of groupAndStudentList">
+    <ion-item-divider>
+      <ion-col size="5">
+        <ion-row>
+          <ion-label>{{group.groupId}}</ion-label>
+        </ion-row>
+      </ion-col>
+      <ion-col>
+        <ion-row> 
+          <ion-button color="primary"><ion-icon name="create"></ion-icon></ion-button>
+          <ion-button color="primary"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button (click)="createBtnClick(group.groupId)" color="primary"><ion-icon name="add"></ion-icon></ion-button>
+        </ion-row>
+      </ion-col>
+    </ion-item-divider>
+  
+    <div>
+      <ion-item *ngFor="let item of group.gpSt">
+        <ion-col>
+          <ion-label>{{item.studentId | studentName:studentList}}</ion-label>
+        </ion-col>
+      </ion-item>
+    </div>
+  </ion-item-group>
+
+
+  
 </ion-content>
+
+

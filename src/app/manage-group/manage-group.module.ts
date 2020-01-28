@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ManageGroupPage } from './manage-group.page';
+import { StudentNamePipe } from '../pipes/student-name.pipe';
 
 const routes: Routes = [
   {
@@ -19,8 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [ManageGroupPage]
+  declarations: [ManageGroupPage, StudentNamePipe],
+  providers: [StudentNamePipe]
 })
 export class ManageGroupPageModule {}

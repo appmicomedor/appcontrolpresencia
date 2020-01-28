@@ -1,6 +1,6 @@
 {
     "name": "app-control-presencia",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "ControlPresenciaComedor",
     "homepage": "https://appcontrolpresencia.micomedor.net",
     "scripts": {
@@ -31,6 +31,7 @@
         "@ionic/storage": "^2.2.0",
         "@logisticinfotech/ionic4-datepicker": "^1.4.2",
         "@oktadev/schematics": "^0.7.1",
+        "bootstrap": "^4.4.1",
         "cordova-android": "8.0.0",
         "cordova-ios": "5.0.1",
         "cordova-plugin-advanced-http": "^2.1.1",
@@ -54,6 +55,7 @@
         "ion4-calendar": "^3.0.4-beta.17",
         "ionic-angular": "^3.9.8",
         "ionic-appauth": "0.3.3",
+        "ionic-tree-view": "^0.3.6",
         "moment": "^2.24.0",
         "rxjs": "~6.5.1",
         "rxjs-compat": "^6.5.2",

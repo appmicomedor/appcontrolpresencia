@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AuthHttpService } from '../auth/auth-http.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { UserService } from '../provider/user.service';
@@ -14,6 +14,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./info.page.scss'],
 })
 export class InfoPage implements OnInit {
+
+  toast:any;
 
   user: any;
   app_version: string;
@@ -34,6 +36,7 @@ export class InfoPage implements OnInit {
     private alertCtrl: AlertController,
     private modalCtrl: ModalController,
     private formBuilder: FormBuilder,
+    public toastCtrl: ToastController,        
   ) {
 
     this.uploadForm = this.formBuilder.group({
@@ -58,7 +61,7 @@ export class InfoPage implements OnInit {
 
 
   ngOnInit() {
-    this.app_version = '1.0.3';
+    this.app_version = '1.0.4';
   }
 
   async cerrarSesion(){
@@ -145,65 +148,83 @@ export class InfoPage implements OnInit {
     return [year, month, day].join('-');
   }
 
-openGroups(school){
-  /*let navigationExtras: NavigationExtras = {
-    state: {
-      school: school,
-      date: this.date,
-      dateFmt: this.dateFmt
-    }
-  };
-  this.router.navigate(['groups'], navigationExtras);   */ 
-}
-
-readerResult;
-
-samplePayload = {
-  readerFile:undefined,
-  password: 'ODOO_PWD'
-};
-
-fileUploading($event) {
-  // console.log($event.target.files[0]);
-  const file: File = $event.target.files[0];
-
-
-  const myReader: FileReader = new FileReader();
-
-  myReader.onloadend = (e) => {
-    console.log('inside reader result');
-    this.readerResult = myReader.result;
-    this.samplePayload.readerFile = myReader.result;
-    // console.log(this.readerResult);
-    // this.invoiceDetails.poFiles = myReader.result;
-    
-
-  };
-
-    myReader.readAsDataURL(file);
-    // this.samplePayload.readerFile = this.readerResult;
-  
-
-}
-
-btnClickSam() {
-  this.sampleSubmit(this.samplePayload);
-}
-
-onFileSelect(event) {
-  if (event.target.files.length > 0) {
-    const file = event.target.files[0];
-    this.uploadForm.get('profile').setValue(file);
+  openGroups(school){
+    /*let navigationExtras: NavigationExtras = {
+      state: {
+        school: school,
+        date: this.date,
+        dateFmt: this.dateFmt
+      }
+    };
+    this.router.navigate(['groups'], navigationExtras);   */ 
   }
-}
 
-sampleSubmit(pl) {
-  // const formData = new FormData();
-  // formData.append('file', this.uploadForm.get('profile').value);
+  readerResult;
 
-  this.httpService.request('POST', 'save_albaran', pl).subscribe( res => {
-    console.log(res);
-  });
-}
+  uploadPayload = {
+    readerFile:undefined,
+    password: '',
+    username: '',
+  };
+
+  fileUploading($event) {
+    // console.log($event.target.files[0]);
+    const file: File = $event.target.files[0];
+
+
+    const myReader: FileReader = new FileReader();
+
+    myReader.onloadend = (e) => {
+      console.log('inside reader result');
+      this.readerResult = myReader.result;
+      this.uploadPayload.readerFile = myReader.result;
+      // console.log(this.readerResult);
+      // this.invoiceDetails.poFiles = myReader.result;
+      
+
+    };
+
+      myReader.readAsDataURL(file);
+      // this.uploadPayload.readerFile = this.readerResult;
+
+  }
+
+  btnClickSam() {
+    this.uploadPayload.username = this.userService.getUser().username;
+    this.uploadPayload.password = this.userService.getUser().password;
+
+    this.uploadSubmit(this.uploadPayload);
+  }
+
+  onFileSelect(event) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.uploadForm.get('profile').setValue(file);
+    }
+  }
+
+  uploadSubmit(params) {
+    // const formData = new FormData();
+    // formData.append('file', this.uploadForm.get('profile').value);
+
+    this.httpService.request('POST', 'save_albaran', params).subscribe( response => {
+      if (!response['error']) { 
+        this.presentToast('Fichero subido correctamente');
+      }
+      else {
+        this.presentToast('ERROR subida del fichero: '+ response['error'].sqlMessage);
+      }
+    });
+  }
+
+  presentToast(msg) {
+    this.toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom'
+    }).then((toastData)=>{
+      toastData.present();
+    });
+  }  
 
 }

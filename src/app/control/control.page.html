@@ -9,13 +9,20 @@
 
 <ion-content>
   <ion-card-header>
-    <ion-card-title>{{school.name}}</ion-card-title>
+    <ion-row>
+      <ion-col size="7">    
+        <ion-card-title>{{school.name}}</ion-card-title>
+      </ion-col>
+      <ion-col size="5">
+        <ion-button (click)="gotoManageGroupPage()" >Editar Grupos</ion-button>
+      </ion-col>
+    </ion-row>
     <ion-card-subtitle><span class="controldate">{{dateFmt}}</span></ion-card-subtitle>    
   </ion-card-header>
 
-  <ion-searchbar placeholder="Buscar" (ionInput)="searchFunc($event.target.value)"></ion-searchbar>
 
-  <ion-button (click)="gotoManageGroupPage()" expand="full">Edit Grupo</ion-button>
+  <ion-searchbar placeholder="Buscar" (ionInput)="searchFunc($event.target.value)"></ion-searchbar>
+  
 
   <div *ngIf="displayingControl?.length == 0" style="text-align: center; padding: 100px 20px;">
     <p style="font-size: 24px;">No hay comensales</p>
