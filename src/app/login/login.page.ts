@@ -24,7 +24,7 @@ export class LoginPage implements OnInit {
     private httpService : AuthHttpService,
     private router: Router,
     public storage: Storage,    
-    private userService : UserService,
+    public userService : UserService,
     private loadingCtrl: LoadingController,
     public toastCtrl: ToastController,      
     ) {
