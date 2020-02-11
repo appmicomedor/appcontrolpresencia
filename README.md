@@ -1,6 +1,6 @@
 # APP Gestión Interna Catering
 
-App para la gestion de presencia de comensales al comedor.
+App para la gestion interna del servicio del comedor.
 
 La aplicación usa https://www.npmjs.com/package/odoo-xmlrpc para acceder a la API de odoo (https://www.odoo.com/documentation/10.0/api_integration.html)
 
@@ -24,3 +24,11 @@ La aplicación usa https://www.npmjs.com/package/odoo-xmlrpc para acceder a la A
 ### iOS
 
 1. Ejecutar `ionic cordova run ios --prod`
+
+### CAMBIOS
+1.0.4 
+  Incorporación de grupos de agrupación de comensales.
+1.0.3
+  Visualización de albaranes de entrega.
+  
+  
