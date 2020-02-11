@@ -1,4 +1,4 @@
-# APP control de presencia
+# APP Gestión Interna Catering
 
 App para la gestion de presencia de comensales al comedor.
 
