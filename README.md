@@ -28,6 +28,7 @@ La aplicación usa https://www.npmjs.com/package/odoo-xmlrpc para acceder a la A
 ### CAMBIOS
 1.0.4 
   Incorporación de grupos de agrupación de comensales.
+  
 1.0.3
   Visualización de albaranes de entrega.
   
