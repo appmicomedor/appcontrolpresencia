@@ -21,6 +21,7 @@ export class AlbaranesPage implements OnInit {
   }
 
   filteredArray: any = [];
+  filteredArrayTemp: any = [];
 
   companyCode: String;
   queryDate;
@@ -40,18 +41,38 @@ export class AlbaranesPage implements OnInit {
       if (this.router.getCurrentNavigation().extras.state) {
         this.zone.run(() => {
 
-          this.getAlbaranPayload.school = this.router.getCurrentNavigation().extras.state.school.name;
-          this.getAlbaranPayload.code = this.router.getCurrentNavigation().extras.state.school.code;
-          this.getAlbaranPayload.dbDate = this.router.getCurrentNavigation().extras.state.date;
-          this.getAlbaranPayload.currentDate = this.router.getCurrentNavigation().extras.state.currentDate;
-          this.companyCode = this.router.getCurrentNavigation().extras.state.school.code;
+          if(this.router.getCurrentNavigation().extras.state.id) {
+            alert('hi');
+            console.log(this.router.getCurrentNavigation().extras.state.id);
+            this.authHttpService.request('GET', 'get-albaranes-for-id?id='+this.router.getCurrentNavigation().extras.state.id)
+            .subscribe( res => {
+              console.log(res.message);
+              try {
+                res.message.forEach(element => {
+                  this.filteredArrayTemp.push(element);
+                });
 
-          if(this.getAlbaranPayload.dbDate == undefined) {
+                this.filteredArray = this.filteredArrayTemp[0];
+              } catch {
+                this.filteredArray = [];
+              }
+              console.log(this.filteredArray);
+              console.log(this.filteredArray[0]);
+            });
+          } else {
+
+            this.getAlbaranPayload.school = this.router.getCurrentNavigation().extras.state.school.name;
+            this.getAlbaranPayload.code = this.router.getCurrentNavigation().extras.state.school.code;
+            this.getAlbaranPayload.dbDate = this.router.getCurrentNavigation().extras.state.date;
+            this.getAlbaranPayload.currentDate = this.router.getCurrentNavigation().extras.state.currentDate;
+            this.companyCode = this.router.getCurrentNavigation().extras.state.school.code;
+
+            if(this.getAlbaranPayload.dbDate == undefined) {
             this.queryDate = this.getAlbaranPayload.currentDate;
             this.getAlbaranPayload.dbDate = this.queryDate;
-          } else {
-            this.queryDate = this.getAlbaranPayload.dbDate;
-          }
+            } else {
+              this.queryDate = this.getAlbaranPayload.dbDate;
+            }
 
           this.dateFmt = this.utilService.presentDate(this.queryDate);
 
@@ -64,8 +85,12 @@ export class AlbaranesPage implements OnInit {
               });
             } catch {
               this.filteredArray = [];
-            }            
+            }          
           });
+
+          }
+
+          
 
         });
       }

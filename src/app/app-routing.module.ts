@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'cuenta-popup', loadChildren: './cuenta-popup/cuenta-popup.module#CuentaPopupPageModule' },
   { path: 'albaranes', loadChildren: './albaranes/albaranes.module#AlbaranesPageModule' },
   { path: 'manage-group', loadChildren: './manage-group/manage-group.module#ManageGroupPageModule' },
+  { path: 'upload-view', loadChildren: './upload-view/upload-view.module#UploadViewPageModule' },
   
 ];
 @NgModule({

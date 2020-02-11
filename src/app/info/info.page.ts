@@ -7,6 +7,8 @@ import { UserService } from '../provider/user.service';
 import { UtilService } from '../provider/util.service';
 import { CalendarPopupPage } from '../calendar-popup/calendar-popup.page'
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { StorageService } from '../auth/storage.service';
+import { UserRoleService } from '../auth/user-role.service';
 
 @Component({
   selector: 'app-info',
@@ -14,8 +16,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./info.page.scss'],
 })
 export class InfoPage implements OnInit {
-
-  toast:any;
 
   user: any;
   app_version: string;
@@ -25,6 +25,13 @@ export class InfoPage implements OnInit {
   dbDate;
   dateFmt: string;
   uploadForm: FormGroup; 
+
+  hideControlDePresencia:boolean = true;
+  hideAlbaranesDeEntrega:boolean = true;
+  hideUploadView:boolean = true;
+
+  username: string;
+  roles: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,7 +43,9 @@ export class InfoPage implements OnInit {
     private alertCtrl: AlertController,
     private modalCtrl: ModalController,
     private formBuilder: FormBuilder,
-    public toastCtrl: ToastController,        
+    public toastCtrl: ToastController, 
+    public storageService: StorageService,
+    private userRoleService: UserRoleService    
   ) {
 
     this.uploadForm = this.formBuilder.group({
@@ -62,6 +71,31 @@ export class InfoPage implements OnInit {
 
   ngOnInit() {
     this.app_version = '1.0.4';
+
+    this.hideControlDePresencia = true;
+    this.hideAlbaranesDeEntrega = true;
+    this.hideUploadView = true;
+
+    this.username = this.userService.getUser().username;
+    this.userRoleService.checkUserRole(this.username).then( res => {
+      console.log(res);
+      
+      this.roles  = res;
+      if(this.roles.includes("Control_de_Presencia")) {
+        this.hideControlDePresencia = false;
+      }
+
+      if(this.roles.includes("Ver_Albaranes")) {
+        this.hideAlbaranesDeEntrega = false;
+      }
+
+      if(this.roles.includes("Subir_Albaranes")) {
+        this.hideUploadView = false;
+      }
+
+    }).catch( err => {
+      console.log(err);
+    })
   }
 
   async cerrarSesion(){
@@ -159,42 +193,6 @@ export class InfoPage implements OnInit {
     this.router.navigate(['groups'], navigationExtras);   */ 
   }
 
-  readerResult;
-
-  uploadPayload = {
-    readerFile:undefined,
-    password: '',
-    username: '',
-  };
-
-  fileUploading($event) {
-    // console.log($event.target.files[0]);
-    const file: File = $event.target.files[0];
-
-
-    const myReader: FileReader = new FileReader();
-
-    myReader.onloadend = (e) => {
-      console.log('inside reader result');
-      this.readerResult = myReader.result;
-      this.uploadPayload.readerFile = myReader.result;
-      // console.log(this.readerResult);
-      // this.invoiceDetails.poFiles = myReader.result;
-      
-
-    };
-
-      myReader.readAsDataURL(file);
-      // this.uploadPayload.readerFile = this.readerResult;
-
-  }
-
-  btnClickSam() {
-    this.uploadPayload.username = this.userService.getUser().username;
-    this.uploadPayload.password = this.userService.getUser().password;
-
-    this.uploadSubmit(this.uploadPayload);
-  }
 
   onFileSelect(event) {
     if (event.target.files.length > 0) {
@@ -203,28 +201,8 @@ export class InfoPage implements OnInit {
     }
   }
 
-  uploadSubmit(params) {
-    // const formData = new FormData();
-    // formData.append('file', this.uploadForm.get('profile').value);
-
-    this.httpService.request('POST', 'save_albaran', params).subscribe( response => {
-      if (!response['error']) { 
-        this.presentToast('Fichero subido correctamente');
-      }
-      else {
-        this.presentToast('ERROR subida del fichero: '+ response['error'].sqlMessage);
-      }
-    });
+  navigateToViewUpdate() {
+    this.router.navigate(['upload-view']);
   }
-
-  presentToast(msg) {
-    this.toast = this.toastCtrl.create({
-      message: msg,
-      duration: 2000,
-      position: 'bottom'
-    }).then((toastData)=>{
-      toastData.present();
-    });
-  }  
 
 }

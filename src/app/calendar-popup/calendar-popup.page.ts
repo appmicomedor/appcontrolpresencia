@@ -36,7 +36,8 @@ export class CalendarPopupPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private utilService: UtilService,
-    public toastCtrl: ToastController,        
+    public toastCtrl: ToastController,      
+    public userService : UserService,      
   ) { 
     this.date = new Date();
     this.dateYMD = this.utilService.formatYMD(this.date);
@@ -44,8 +45,11 @@ export class CalendarPopupPage implements OnInit {
 
     this.daysConfig = [];   
      
+    var control_days_prev = parseInt(this.userService.getSetting('control_days_prev'));
+    console.log('control_days_prev = ' + control_days_prev);
+    
     var b = new Date();
-    b.setDate(b.getDate() - 80); // Hace 80 días
+    b.setDate(b.getDate() - control_days_prev); // Hace 80 días
     this.optionsRange.from = b;
   
   }

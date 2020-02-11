@@ -31,6 +31,7 @@
         "@ionic/storage": "^2.2.0",
         "@logisticinfotech/ionic4-datepicker": "^1.4.2",
         "@oktadev/schematics": "^0.7.1",
+        "@swimlane/ngx-datatable": "^16.0.3",
         "bootstrap": "^4.4.1",
         "cordova-android": "8.0.0",
         "cordova-ios": "5.0.1",

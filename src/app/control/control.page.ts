@@ -21,7 +21,10 @@ export class ControlPage implements OnInit {
   dateFmt: string;
 
   control: any;
-  displayingControl: any;
+  displayingControl: any = [];
+  timeForSettimeOut = 1;
+
+  groupList;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,8 +51,63 @@ export class ControlPage implements OnInit {
     });
   }
 
+  studentIdWithGroup:any = [];
+  studentsWithGroup:any = [];
+  studentsWithoutGroup:any = [];
+  studentsWithoutGroupDisplayList:any = [];
+
   ngOnInit() {
 
+    this.getGroups().then( res => {
+      this.groupList = res;      
+      this.groupList.forEach(element => {
+         element.show = false;
+      });
+
+      console.log(this.groupList);
+      console.log(this.displayingControl);
+
+    }).catch( err => {
+      console.log(err);
+      this.groupList = [];
+    });
+
+  }
+
+  getStudentsWithoutGroup() {
+    this.getAllStudentsWithGroup().then( res => {
+      this.studentIdWithGroup = res;
+
+      if(this.displayingControl.length === 0) {
+        alert('ho');
+        // this.timeForSettimeOut = 3;
+      }
+
+      // changed here from control to displayingcontrol
+        this.studentIdWithGroup.forEach( ele => {
+          this.displayingControl.forEach( el => {
+            if(ele.studentId === el.id) {
+              this.studentsWithGroup.push(el);
+            }
+          })
+          console.log(ele);
+        });
+
+        // control to display control to work search
+        this.studentsWithoutGroup = this.displayingControl.filter(el => {
+          return this.studentsWithGroup.indexOf(el) == -1;
+        });
+
+        this.studentsWithoutGroupDisplayList = this.studentsWithoutGroup;
+
+        console.log(this.studentsWithGroup);
+        console.log(this.studentsWithoutGroup);
+
+
+    }).catch(err => {
+      this.studentIdWithGroup = [];
+      console.log(err);
+    });
   }
 
   getControl(){
@@ -107,6 +165,7 @@ export class ControlPage implements OnInit {
 
         this.displayingControl = this.control;
         console.log(this.displayingControl);
+        this.getStudentsWithoutGroup();
       }
     });
   }
@@ -193,6 +252,8 @@ export class ControlPage implements OnInit {
   searchFunc(event) {
     if(event.length == 0) {
       this.displayingControl = this.control;
+      this.studentsWithoutGroupDisplayList = this.studentsWithoutGroup;
+      this.displayStudentListForClickedGroupNew = this.studentListForClickedGroupNew;
       // this.getControl();
     } else {
       let newArr = this.control.filter( (student) => {
@@ -200,6 +261,21 @@ export class ControlPage implements OnInit {
       } );
       console.log(newArr);
       this.displayingControl = newArr;
+
+      // search for students without group
+      let newArrStudentsWithoutGroup = this.studentsWithoutGroup.filter( (student) => {
+        return student.student_name.toLowerCase().includes(event.toLowerCase());
+      } );
+      console.log(newArrStudentsWithoutGroup);
+      this.studentsWithoutGroupDisplayList = newArrStudentsWithoutGroup;
+
+      // search for studentListForClickedGroupNew
+      let newArrStudentListForClickedGroupNew = this.studentListForClickedGroupNew.filter( (student) => {
+        return student.student_name.toLowerCase().includes(event.toLowerCase());
+      } );
+      console.log(newArrStudentsWithoutGroup);
+      this.displayStudentListForClickedGroupNew = newArrStudentListForClickedGroupNew;
+
     }
     
   }
@@ -213,5 +289,79 @@ export class ControlPage implements OnInit {
     };
     this.router.navigate(['manage-group'], navigationExtras);
   }
+
+  getGroups(){
+
+    return new Promise( (resolve, reject) => {
+      this.httpService.request('GET', 'get-all-groups').subscribe( res => {
+        if(res) {
+          resolve(res.message);
+        } else {
+          reject('error getting groups');
+        }
+      });
+    })
+  
+  }
+
+  studentListForClickedGroup:any = [];
+  studentListForClickedGroupNew = [];
+  displayStudentListForClickedGroupNew = [];
+
+  rowClick(index, groupid) {
+    this.groupList[index].show = !this.groupList[index].show;
+    this.groupList.forEach( (element, ind) => {
+      if(ind !== index) {
+        element.show = false;
+      }
+    });
+
+    if(this.groupList[index].show === true) {
+      this.studentListForClickedGroupNew = [];
+      this.getAllStudentIdsForGroupId(groupid).then( res => {
+        this.studentListForClickedGroup = res;
+        console.log(this.studentListForClickedGroup);
+        
+        this.displayingControl.forEach(element => {
+          this.studentListForClickedGroup.forEach( ele => {
+            if(element.id === ele.studentId) {
+              this.studentListForClickedGroupNew.push(element);
+            }
+          });
+          console.log(element);
+        });
+
+        console.log(this.studentListForClickedGroupNew);
+        this.displayStudentListForClickedGroupNew = this.studentListForClickedGroupNew;
+      }).catch( err => {
+        console.log(err);
+      });
+    }
+  }
+
+  getAllStudentIdsForGroupId(groupid) {
+    return new Promise( (resolve, reject) => {
+      this.httpService.request('GET', 'get-studentIds-for-groupId?gid='+groupid).subscribe( res => {
+        if(res) {
+          resolve(res.message);
+        } else {
+          reject('no data recieved from get-studentIds-for-groupId');
+        }
+      })
+    });
+  }
+
+  getAllStudentsWithGroup() {
+    return new Promise( (resolve, reject) => {
+      this.httpService.request('GET', 'get-all-group-students').subscribe( res => {
+        if(res) {
+          resolve(res.message);
+        } else {
+          reject('Error getting all students with group');
+        }
+      });
+    });
+  }
+
 
 }

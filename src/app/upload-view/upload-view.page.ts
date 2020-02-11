@@ -1,0 +1,147 @@
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../provider/user.service';
+import { AuthHttpService } from '../auth/auth-http.service';
+import { ToastController } from '@ionic/angular';
+import { Router, NavigationExtras } from '@angular/router';
+
+
+@Component({
+  selector: 'app-upload-view',
+  templateUrl: './upload-view.page.html',
+  styleUrls: ['./upload-view.page.scss'],
+})
+export class UploadViewPage implements OnInit {
+
+  constructor(private httpService: AuthHttpService, 
+    private userService: UserService, 
+    public toastCtrl: ToastController,
+    private router: Router) {
+      // this.ngxdataTable.messages.totalMessage="";
+     }
+
+  jsonData = [
+    {
+      "name": "Ethel Price",
+      "gender": "female",
+      "company": "Johnson, Johnson and Partners, LLC CMP DDC",
+      "age": 22
+    },
+    {
+      "name": "Claudine Neal",
+      "gender": "female",
+      "company": "Sealoud",
+      "age": 55
+    },
+    {
+      "name": "Beryl Rice",
+      "gender": "female",
+      "company": "Velity",
+      "age": 67
+    },
+    {
+      "name": "Wilder Gonzales",
+      "gender": "male",
+      "company": "Geekko"
+    }];
+
+    tableData: any = [];
+
+  ngOnInit() {
+
+    this.httpService.request('GET','get-all-albaranes-list').subscribe( res => {
+      console.log(res);
+      this.tableData = res.message;
+    });
+
+  }
+
+  uploadPayload = {
+    fileName:'',
+    readerFile:undefined,
+    password: '',
+    username: '',
+  };
+
+  readerResult;
+  toast:any;
+
+  btnClickSam() {
+    this.uploadPayload.username = this.userService.getUser().username;
+    this.uploadPayload.password = this.userService.getUser().password;
+
+    if(this.uploadPayload.readerFile === undefined) {
+      alert('nooo');
+    } else {
+      this.uploadSubmit(this.uploadPayload);
+    }
+  }
+
+  fileUploading($event) {
+    // console.log($event.target.files[0]);
+    const file: File = $event.target.files[0];
+    console.log(file);
+    const fileName: string = file.name;
+
+    const myReader: FileReader = new FileReader();
+
+    myReader.onloadend = (e) => {
+      console.log('inside reader result');
+      this.readerResult = myReader.result;
+      this.uploadPayload.fileName = fileName;
+      this.uploadPayload.readerFile = myReader.result;
+      // console.log(this.readerResult);
+      // this.invoiceDetails.poFiles = myReader.result;
+      
+
+    };
+
+      myReader.readAsDataURL(file);
+      // this.uploadPayload.readerFile = this.readerResult;
+
+  }
+
+  uploadSubmit(params) {
+    // const formData = new FormData();
+    // formData.append('file', this.uploadForm.get('profile').value);
+
+    this.httpService.request('POST', 'save_albaran', params).subscribe( response => {
+      if (!response['error']) { 
+        this.presentToast('Fichero subido correctamente');
+      }
+      else {
+        this.presentToast('ERROR subida del fichero: '+ response['error'].sqlMessage);
+      }
+    });
+  }
+
+  presentToast(msg) {
+    this.toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom'
+    }).then((toastData)=>{
+      toastData.present();
+    });
+  }
+  
+  async open(row) {
+    console.log(row);
+  }
+
+  onUserEvent(e) {
+    if ( e.type == "click" ) {
+      console.log(e.row);
+      this.navigateToAlbaranes(e.row.id);
+    }
+  }
+
+  navigateToAlbaranes(id){
+    console.log(id);
+    let navigationExtras: NavigationExtras = {
+      state: {
+        id:id
+      }
+    };
+    this.router.navigate(['albaranes'], navigationExtras);
+  }
+}

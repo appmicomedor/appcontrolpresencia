@@ -14,7 +14,7 @@
         <ion-card-title>{{school.name}}</ion-card-title>
       </ion-col>
       <ion-col size="5">
-        <ion-button (click)="gotoManageGroupPage()" >Editar Grupos</ion-button>
+        <ion-button [disabled]="displayingControl?.length == 0" (click)="gotoManageGroupPage()" >Editar Grupos</ion-button>
       </ion-col>
     </ion-row>
     <ion-card-subtitle><span class="controldate">{{dateFmt}}</span></ion-card-subtitle>    
@@ -27,7 +27,63 @@
   <div *ngIf="displayingControl?.length == 0" style="text-align: center; padding: 100px 20px;">
     <p style="font-size: 24px;">No hay comensales</p>
   </div>
-  <div *ngIf="displayingControl?.length > 0" >
+
+
+  <ion-item-group *ngFor="let group of groupList;let i = index">
+    <ion-item-divider>
+      <ion-col size="7">
+        <ion-row (click)="rowClick(i, group.groupId)">
+          <ion-label><ion-icon *ngIf="!group.show" name="arrow-forward"></ion-icon><ion-icon *ngIf="group.show" name="arrow-down"></ion-icon>&nbsp;{{group.groupId}}</ion-label>
+        </ion-row>
+      </ion-col>
+      <!-- <ion-col>
+        <ion-row> 
+          <ion-button style="--color:#ffff;--background:#fd5e53;" (click)="deleteGroupBtn(group.groupId)" ><ion-icon name="trash"></ion-icon></ion-button>
+          <ion-button style="--color:#ffff;--background:#12cad6;" (click)="createBtnClick(group.groupId)" ><ion-icon name="add"></ion-icon></ion-button>
+        </ion-row>
+      </ion-col> -->
+    </ion-item-divider>
+    
+    <div *ngIf="group.show">
+      <div *ngIf="studentListForClickedGroup.length === 0">
+        <ion-item class="animated slideInDown delay-0s">
+          <ion-col>
+            <ion-label>Sin comensales</ion-label>
+          </ion-col>
+        </ion-item>
+      </div>
+      <div *ngIf="studentListForClickedGroup.length > 0">
+        
+          <!-- <ion-item *ngFor="let item of studentListForClickedGroupNew" class="animated slideInDown delay-0s">
+            <ion-col>
+              <ion-label style="padding-right: 20px;">{{item.student_name}}</ion-label>
+            </ion-col>
+          </ion-item> -->
+
+          <div *ngIf="displayStudentListForClickedGroupNew?.length > 0" >
+            <ion-row *ngFor="let student of displayStudentListForClickedGroupNew; let i = index" [class]="student.class" (click)="changeControl(student, i)">
+              <ion-col size="12">
+                <div class="asistencia-nombre">{{student.nombre}}</div>               
+              </ion-col>
+            </ion-row>
+          </div>
+        
+      </div>
+    </div>
+  
+
+  </ion-item-group>
+
+  <hr>
+
+  <div *ngIf="studentsWithoutGroupDisplayList?.length > 0" >
+    <ion-row *ngFor="let st of studentsWithoutGroupDisplayList; let i = index" [class]="st.class" (click)="changeControl(st, i)">
+      <ion-col size="12">
+        <div class="asistencia-nombre">{{st.nombre}}</div>               
+      </ion-col>
+    </ion-row>
+  </div>
+  <!-- <div *ngIf="displayingControl?.length > 0" >
     <ion-row *ngFor="let student of displayingControl; let i = index" [class]="student.class" (click)="changeControl(student, i)">
       <ion-col size="12">
         <div class="asistencia-nombre">{{student.nombre}}</div>               
@@ -36,5 +92,5 @@
   </div>
   <div style="text-align: center;">
     <ion-button size="medium" style="width: 50%;margin:auto;margin-top: 30px;--color:#00584c;--background:#ffffff;" (click)="goBack()" expand="block">Volver</ion-button>
-  </div>
+  </div> -->
 </ion-content>

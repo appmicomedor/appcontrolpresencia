@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestión albaranes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Subir</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Ver</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <ion-card>
+        <ion-card-header>
+          <div style="font-size: 20px;font-weight: bold;padding-left: 20px;padding-top: 20px;">Subir albarán</div>
+        </ion-card-header>
+        <ion-card-content style="padding-top: 0px;">
+          <ion-row>
+            <ion-col size="9" style="padding-top: 10px;">
+              <input class="custom-file-input" type="file" (change)="fileUploading($event)">
+            </ion-col>
+            <ion-col size="3" >
+              <ion-button color="primary" (click)="btnClickSam()">Subir</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <ngx-datatable (activate)="onUserEvent($event)" class="bootstrap" [rows]="tableData" [rowHeight]="auto" [columnMode]="force" [footerHeight]="50" [limit]="10" [externalPaging]="false">
+        <!-- <ngx-datatable-column prop="name" [name]="Name" >
+        </ngx-datatable-column>
+        <ngx-datatable-column>
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <ion-button (click)="open(row)">Det</ion-button>
+          </ng-template>
+        </ngx-datatable-column> -->
+
+        <ngx-datatable-column prop="fechaelaboracion" [name]="fechaelaboracion" >
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="fechaconsumo" [name]="fechaconsumo" >
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="fileName" [name]="fileName" >
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="companyId" [name]="companyId" >
+        </ngx-datatable-column>
+
+      </ngx-datatable>
+    </div>
+  </div>
+</ion-content>

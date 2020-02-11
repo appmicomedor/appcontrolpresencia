@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons (click)="somefunc()" slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>Editar Grupos</ion-title>
@@ -93,7 +93,7 @@
 
   </ion-grid>
 
-  <ion-item-group *ngFor="let group of groupAndStudentList">
+  <!-- <ion-item-group *ngFor="let group of groupAndStudentList">
     <ion-item-divider>
       <ion-col size="5">
         <ion-row>
@@ -102,8 +102,7 @@
       </ion-col>
       <ion-col>
         <ion-row> 
-          <ion-button color="primary"><ion-icon name="create"></ion-icon></ion-button>
-          <ion-button color="primary"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button (click)="deleteGroupBtn(group.groupId)" color="primary"><ion-icon name="close"></ion-icon></ion-button>
           <ion-button (click)="createBtnClick(group.groupId)" color="primary"><ion-icon name="add"></ion-icon></ion-button>
         </ion-row>
       </ion-col>
@@ -116,7 +115,47 @@
         </ion-col>
       </ion-item>
     </div>
+  </ion-item-group> -->
+
+
+
+  <ion-item-group *ngFor="let group of groupList;let i = index">
+    <ion-item-divider>
+      <ion-col size="7">
+        <ion-row (click)="rowClick(i, group.groupId)">
+          <ion-label><ion-icon *ngIf="!group.show" name="arrow-forward"></ion-icon><ion-icon *ngIf="group.show" name="arrow-down"></ion-icon>&nbsp;{{group.groupId}}</ion-label>
+        </ion-row>
+      </ion-col>
+      <ion-col>
+        <ion-row> 
+          <ion-button style="--color:#ffff;--background:#fd5e53;" (click)="deleteGroupBtn(group.groupId)" ><ion-icon name="trash"></ion-icon></ion-button>
+          <ion-button style="--color:#ffff;--background:#12cad6;" (click)="createBtnClick(group.groupId)" ><ion-icon name="add"></ion-icon></ion-button>
+        </ion-row>
+      </ion-col>
+    </ion-item-divider>
+    
+    <div *ngIf="group.show">
+      <div *ngIf="studentListForClickedGroup.length === 0">
+        <ion-item class="animated slideInDown delay-0s">
+          <ion-col>
+            <ion-label>Sin comensales</ion-label>
+          </ion-col>
+        </ion-item>
+      </div>
+      <div *ngIf="studentListForClickedGroup.length > 0">
+        
+          <ion-item *ngFor="let item of studentListForClickedGroup" class="animated slideInDown delay-0s">
+            <ion-col>
+              <ion-label style="padding-right: 20px;">{{item.studentId | studentName:studentList}}</ion-label>
+            </ion-col>
+          </ion-item>
+        
+      </div>
+    </div>
+  
+
   </ion-item-group>
+
 
 
   

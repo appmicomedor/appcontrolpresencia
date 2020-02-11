@@ -5,6 +5,7 @@ import { AuthHttpService } from '../auth/auth-http.service';
 import { AlertController } from '@ionic/angular';
 import { UserService } from '../provider/user.service';
 import { StudentNamePipe } from '../pipes/student-name.pipe';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-manage-group',
@@ -71,7 +72,19 @@ export class ManageGroupPage implements OnInit {
 
   ngOnInit() {
 
-    this.getGroups();
+    this.getGroups().then( res => {
+      this.groupList = res;      
+      this.groupList.forEach(element => {
+         element.show = false;
+      });
+
+    }).catch( err => {
+      console.log(err);
+      this.groupList = [];
+    });
+
+    console.log(this.groupList);
+    this.groupAndStudentList = [];
 
     this.getGroupStudents().then( suc => {
       var arr = [];
@@ -100,6 +113,7 @@ export class ManageGroupPage implements OnInit {
 
         this.getAllDistinctGroupIds().then( suc => {
           this.distinctGroupId = suc;
+          console.log(suc);
     
           this.distinctGroupId.forEach(gpid => {
             let test = {
@@ -165,6 +179,7 @@ export class ManageGroupPage implements OnInit {
             } else {
               this.saveGroupPayload.groupId = alertData.name1;
               this.newGroupCreationg();
+              this.ngOnInit();
             }
           }
         }
@@ -175,26 +190,51 @@ export class ManageGroupPage implements OnInit {
   };
 
   createBtnClick(groupId) {
-    this.addStudentAlert(groupId);
+    this.addStudentAlertNew(groupId);
   }
 
-  async addStudentAlert(groupId) {
+  async addStudentAlertNew(groupId) {
+
     let input = {data:[]};
-    let newArr = this.groupAndStudentList.filter( (arrElem) => {
-      return arrElem.groupId === groupId;
-    });
-    let desiredArr = newArr[0].gpSt;
 
-    desiredArr.forEach( (element, i) => {
-      input.data.push({name:"checkbox"+i,type: 'checkbox',label:this.studentPipe.transform(element.studentId, this.studentList),value: '{"type":"checked","studentId":"'+element.studentId+'"}',checked:true})
-    });
+    if(this.groupStudents.length === 0) {
+      this.studentList.forEach( (element, j) => {
+        console.log(element);
+        input.data.push({name:"checkbox"+(j+input.data.length),type: 'checkbox',label:this.studentPipe.transform(element.id, this.studentList),value: '{"type":"unchecked","studentId":"'+element.id+'"}'})
+      });
+    } else {
 
-    this,this.studentsWithoutGroupList.forEach( (elem, j) => {
-      input.data.push({name:"checkbox"+(j+input.data.length),type: 'checkbox',label:this.studentPipe.transform(elem.id, this.studentList),value: '{"type":"unchecked","studentId":"'+elem.id+'"}'})
-      // console.log(elem);
-    })
+        // filter the student who is in the given groupId
+        let filteredGroupIdStudents = this.groupStudents.filter( ele => {
+          return ele.groupId === groupId;
+        });
 
-    console.log(newArr);
+        filteredGroupIdStudents.forEach( (elem, i) => {
+          console.log(elem.studentId);
+          console.log(this.studentPipe.transform(elem.studentId, this.studentList));
+          input.data.push({name:"checkbox"+i,type: 'checkbox',label:this.studentPipe.transform(elem.studentId, this.studentList),value: '{"type":"checked","studentId":"'+elem.studentId+'"}',checked:true});
+        });
+
+        // getting the common student from studentList
+        let studentsWithGroup = [];
+        this.studentList.forEach(element1 => {
+          this.groupStudents.forEach(element2 => {
+            if(element1.id === element2.studentId) {
+              studentsWithGroup.push(element1);
+            }
+          });
+        });
+
+        // getting teh students without a group
+        let studentsWithoutGroupList = this.studentList.filter(el => {
+          return studentsWithGroup.indexOf(el) == -1;
+        });
+
+        studentsWithoutGroupList.forEach( (eleme, j) => {
+          input.data.push({name:"checkbox"+(j+input.data.length),type: 'checkbox',label:this.studentPipe.transform(eleme.id, this.studentList),value: '{"type":"unchecked","studentId":"'+eleme.id+'"}'})
+        });
+    }
+    
     const alert = await this.alertController.create({
       header: 'Create Group',
       inputs: input.data,
@@ -203,35 +243,23 @@ export class ManageGroupPage implements OnInit {
         {
           text: 'Ok',
           handler: (alertData) => {
-            console.log(alertData.name1);
-            if(alertData.name1 === '') {
-              this.presentAlert();
-            } else {
-              let studentIdToAddGroup:any = [];
-              let studentIdToRemoveGroup:any = [];
-              // console.log(alertData);
-              alertData.forEach(element => {
-                console.log(JSON.parse(element));
-                // console.log(element);
-                if(JSON.parse(element).type === "unchecked") {
-                  studentIdToAddGroup.push(JSON.parse(element).studentId);
-                }
+            let studentIdToAddGroup:any = [];
+            let studentIdToRemoveGroup:any = [];
+            console.log(alertData);
+            alertData.forEach(element => {
+              if(JSON.parse(element).type === "unchecked") {
+                studentIdToAddGroup.push(JSON.parse(element).studentId);
+              }
 
-                if(JSON.parse(element).type === "checked") {
-                  studentIdToRemoveGroup.push(JSON.parse(element).studentId);
-                }
-                
-              });
-              console.log(studentIdToRemoveGroup);
-              console.log(desiredArr);
-              let realStToRemove = desiredArr.filter( ele => {
-                console.log(ele.studentId);
-                return studentIdToRemoveGroup.includes(String(ele.studentId));
-              });
-              console.log(realStToRemove);
-              this.addToGroup(groupId, studentIdToAddGroup, studentIdToRemoveGroup);
-              
-            }
+              if(JSON.parse(element).type === "checked") {
+                studentIdToRemoveGroup.push(JSON.parse(element).studentId);
+              }
+            });
+
+            this.addToGroup(groupId, studentIdToAddGroup, []);
+            console.log(studentIdToAddGroup);
+            console.log(studentIdToRemoveGroup);
+
           }
         }
       ]
@@ -240,15 +268,17 @@ export class ManageGroupPage implements OnInit {
     await alert.present();
   };
 
-  // studentListPromise = new Promise( (resolve, reject) => {
-  //   if()
-  // });
-
   getGroups(){
 
+    return new Promise( (resolve, reject) => {
       this.httpService.request('GET', 'get-all-groups').subscribe( res => {
-        this.groupList = res.message;
+        if(res) {
+          resolve(res.message);
+        } else {
+          reject('error getting groups');
+        }
       });
+    })
   
   }
 
@@ -282,7 +312,7 @@ export class ManageGroupPage implements OnInit {
           console.log(this.saveGroupPayload);
           this.httpService.request('POST', 'save-group', this.saveGroupPayload).subscribe( res => {
             console.log(res);
-            
+            this.ngOnInit();
           });
         }
       }
@@ -313,7 +343,7 @@ export class ManageGroupPage implements OnInit {
 
     this.httpService.request('POST', 'save-EstudianteGrupo-data', this.addStudentToGroupPayload).subscribe( res => {
       console.log(res);
-      // this.ngOnInit();
+      this.ngOnInit();
       this.clearAddStudentToGroupPayload();
     });
   }
@@ -333,6 +363,74 @@ export class ManageGroupPage implements OnInit {
         }
       })
     });
+  }
+
+  getAllStudentIdsForGroupId(groupid) {
+    return new Promise( (resolve, reject) => {
+      this.httpService.request('GET', 'get-studentIds-for-groupId?gid='+groupid).subscribe( res => {
+        if(res) {
+          resolve(res.message);
+        } else {
+          reject('no data recieved from get-studentIds-for-groupId');
+        }
+      })
+    });
+  }
+
+  deleteGroupBtn(groupId) {
+    this.deleteGroupAlert(groupId);
+  }
+
+
+  async deleteGroupAlert(groupId) {
+    const alert = await this.alertController.create({
+      header: 'Borrar grupo',
+      message: 'Estás seguro que quieres eliminar el grupo '+groupId+' ?',
+      buttons: [
+        {
+          text: 'Ok',
+          handler: (alertData) => {
+            console.log(groupId);
+            let groupDeletePayload = {groupId: groupId}
+            this.httpService.request('POST','delete-group-and-students-in-it', groupDeletePayload).subscribe( res => {
+              console.log(res);
+              this.ngOnInit();
+            });
+          }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: (alertData) => {
+            console.log('cancel');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  };
+
+  studentListForClickedGroup:any = [];
+  rowClick(index, groupid) {
+    this.groupList[index].show = !this.groupList[index].show;
+    this.groupList.forEach( (element, ind) => {
+      if(ind !== index) {
+        element.show = false;
+      }
+    });
+
+    if(this.groupList[index].show === true) {
+      this.getAllStudentIdsForGroupId(groupid).then( res => {
+        this.studentListForClickedGroup = res;
+      }).catch( err => {
+        console.log(err);
+      });
+    }
+  }
+
+  somefunc() {
+    console.log('hi');
   }
 
 }

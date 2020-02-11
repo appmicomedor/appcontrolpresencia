@@ -40,4 +40,15 @@ export class UserService {
   getVersion(){
     return '1.0.4';
   }  
+
+  getSetting(name) {
+
+    for (var i = 0; i < this.user.settings.length; i++) {
+      if (this.user.settings[i].name === name){
+        return this.user.settings[i].value;
+      }
+    }
+
+    return null;
+  }
 }
