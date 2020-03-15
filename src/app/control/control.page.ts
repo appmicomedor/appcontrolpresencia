@@ -294,10 +294,10 @@ export class ControlPage implements OnInit {
     this.router.navigate(['manage-group'], navigationExtras);
   }
 
-  getGroups(){
+  getGroupForUsername(){
 
     return new Promise( (resolve, reject) => {
-      this.httpService.request('GET', 'get-all-groups').subscribe( res => {
+      this.httpService.request('GET', 'get-groups?username='+this.userService.getUser().username+'&schoolId='+this.school.code).subscribe( res => {
         if(res) {
           resolve(res.message);
         } else {
@@ -305,25 +305,6 @@ export class ControlPage implements OnInit {
         }
       });
     })
-  
-  }
-
-  getGroupForUsername(){
-
-    return new Promise( (resolve, reject) => {
-      this.storageService.getItem('user').then( res => {
-        this.httpService.request('GET', 'get-group-for-username?username='+res['username']+'&schoolId='+this.school.code).subscribe( res => {
-          if(res) {
-            resolve(res.message);
-          } else {
-            reject('error getting groups');
-          }
-        });
-      }).catch( err => {
-        console.log(err);
-      });
-    })
-  
   }
 
   studentListForClickedGroup:any = [];
@@ -350,7 +331,6 @@ export class ControlPage implements OnInit {
               this.studentListForClickedGroupNew.push(element);
             }
           });
-          console.log(element);
         });
 
         console.log(this.studentListForClickedGroupNew);
@@ -375,7 +355,7 @@ export class ControlPage implements OnInit {
 
   getAllStudentsWithGroup() {
     return new Promise( (resolve, reject) => {
-      this.httpService.request('GET', 'get-all-group-students').subscribe( res => {
+      this.httpService.request('GET', 'get-students?username='+this.userService.getUser().username+'&schoolId='+this.school.code).subscribe( res => {
         if(res) {
           resolve(res.message);
         } else {

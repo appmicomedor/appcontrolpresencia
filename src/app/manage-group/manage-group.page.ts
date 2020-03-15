@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AuthHttpService } from '../auth/auth-http.service';
 import { AlertController } from '@ionic/angular';
@@ -22,7 +22,7 @@ export class ManageGroupPage implements OnInit {
   currentSchool: any;
   saveGroupPayload = {
     currentSchoolId:'',
-    groupId:'',
+    groupName:'',
     userName:'',
     createdAt:'',
   }
@@ -30,17 +30,9 @@ export class ManageGroupPage implements OnInit {
   addStudentToGroupPayload = {
     userName:'',
     groupId:'',
-    studentIdToAdd:[],
-    studentIdToRemove:[],
+    students:[],
     createdAt:'',
-    school:''
-  }
-
-  removeStudentFromGroupPayload = {
-    userName:'',
-    groupId:'',
-    studentId:'',
-    createdAt:''
+    schoolId:''
   }
 
   // all the group list
@@ -48,10 +40,6 @@ export class ManageGroupPage implements OnInit {
 
   // all the students who has groups
   groupStudents;
-
-  distinctGroupId:any = [];
-
-  groupAndStudentList = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -63,88 +51,70 @@ export class ManageGroupPage implements OnInit {
     private studentPipe: StudentNamePipe,
     private storageService: StorageService
   ) { 
-    console.log(this.router.getCurrentNavigation().extras.state.studentList);
-    console.log(this.router.getCurrentNavigation().extras.state.school.code);
 
     this.studentList = this.router.getCurrentNavigation().extras.state.studentList;
     this.currentSchool = this.router.getCurrentNavigation().extras.state.school;
     this.saveGroupPayload.currentSchoolId = this.router.getCurrentNavigation().extras.state.school.code;
     this.saveGroupPayload.createdAt, this.addStudentToGroupPayload.createdAt =  ''+new Date()+'';
 
-    console.log(this.currentSchool.code);
   }
 
   ngOnInit() {
 
+
+  }
+
+  doRefresh(event) {
+    this.getGroups(); 
+    event.target.complete();
+  }
+
+  ionViewDidEnter() {  
+    this.getGroups();
+  }
+
+  getGroups() {
+
     // this.getGroupForUsername();
+    let $this = this;
 
     this.getGroupForUsername().then( res => {
-      console.log('ooooooo');
-      console.log(res);
-      console.log('ooooooo');
 
-      this.groupList = res;      
-      this.groupList.forEach(element => {
+      $this.groupList = res;      
+      $this.groupList.forEach(element => {
          element.show = false;
       });
 
     }).catch( err => {
       console.log(err);
-      this.groupList = [];
+      $this.groupList = [];
     });
-
-    console.log(this.groupList);
-    this.groupAndStudentList = [];
 
     this.getGroupStudents().then( suc => {
       var arr = [];
-      console.log(suc);
-      this.groupStudents = suc;
-      if(this.groupStudents.length === 0) {
-        this.displayStudentList = this.studentList;
+
+      $this.groupStudents = suc;
+      if($this.groupStudents.length === 0) {
+        $this.displayStudentList = $this.studentList;
       } else {
         // iterate through the elements and find students that do not have groups and show that group......
-        this.displayStudentList = this.studentList;
-        this.studentList.forEach(elem1 => {
-          this.groupStudents.forEach(elem2 => {
+        $this.displayStudentList = $this.studentList;
+        $this.studentList.forEach(elem1 => {
+          $this.groupStudents.forEach(elem2 => {
             if(elem1.id === elem2.studentId) {
-              this.studensWithGroupList.push(elem1);
+              $this.studensWithGroupList.push(elem1);
             }
           });
         });
-
-        console.log(this.studensWithGroupList);
         
-        this.studentsWithoutGroupList = this.studentList.filter( (ele) => {
-          return !this.studensWithGroupList.includes(ele);
+        $this.studentsWithoutGroupList = $this.studentList.filter( (ele) => {
+          return !$this.studensWithGroupList.includes(ele);
         });
 
-        this.displayStudentList = this.studentsWithoutGroupList;
-
-        this.getAllDistinctGroupIds().then( suc => {
-          this.distinctGroupId = suc;
-          console.log(suc);
-    
-          this.distinctGroupId.forEach(gpid => {
-            let test = {
-              groupId:gpid.groupId,
-              gpSt: []
-            }
-            this.groupStudents.forEach(st => {
-              if(st.groupId === gpid.groupId){
-                test.gpSt.push(st);
-              }
-            });
-            this.groupAndStudentList.push(test);
-          });
-          console.log(this.groupAndStudentList);
-        }).catch( err => {
-          console.log(err);
-        });
+        $this.displayStudentList = $this.studentsWithoutGroupList;
 
       }
-      
-
+    
     }).catch( err => {
       console.log(err);
     });
@@ -161,7 +131,14 @@ export class ManageGroupPage implements OnInit {
           handler: () => {
             this.createGroupAlert();
           }
-        }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('cancel');
+          }
+        }        
       ]
     });
 
@@ -183,16 +160,22 @@ export class ManageGroupPage implements OnInit {
         {
           text: 'Ok',
           handler: (alertData) => {
-            console.log(alertData.name1);
+
             if(alertData.name1 === '') {
               this.presentAlert();
             } else {
-              this.saveGroupPayload.groupId = alertData.name1;
-              this.newGroupCreationg();
-              this.ngOnInit();
+              this.saveGroupPayload.groupName = alertData.name1;
+              this.newGroupCreation();
             }
           }
-        }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('cancel');
+          }
+        }  
       ]
     });
 
@@ -209,7 +192,6 @@ export class ManageGroupPage implements OnInit {
 
     if(this.groupStudents.length === 0) {
       this.studentList.forEach( (element, j) => {
-        console.log(element);
         input.data.push({name:"checkbox"+(j+input.data.length),type: 'checkbox',label:this.studentPipe.transform(element.id, this.studentList),value: '{"type":"unchecked","studentId":"'+element.id+'"}'})
       });
     } else {
@@ -246,42 +228,40 @@ export class ManageGroupPage implements OnInit {
     }
     
     const alert = await this.alertController.create({
-      header: 'Create Group',
+      header: 'Seleccionar estudiantes',
       inputs: input.data,
       message: 'Marca o desmarca estudiantes para añadir o eliminar del grupo.',
       buttons: [
         {
           text: 'Ok',
           handler: (alertData) => {
-            let studentIdToAddGroup:any = [];
-            let studentIdToRemoveGroup:any = [];
-            console.log(alertData);
-            alertData.forEach(element => {
-              if(JSON.parse(element).type === "unchecked") {
-                studentIdToAddGroup.push(JSON.parse(element).studentId);
-              }
+            let newStudents:any = [];
 
-              if(JSON.parse(element).type === "checked") {
-                studentIdToRemoveGroup.push(JSON.parse(element).studentId);
-              }
+            alertData.forEach(element => {
+              newStudents.push(JSON.parse(element).studentId);
             });
 
-            this.addToGroup(groupId, studentIdToAddGroup, []);
-            console.log(studentIdToAddGroup);
-            console.log(studentIdToRemoveGroup);
-
+            this.updateGroup(groupId, newStudents);
           }
-        }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('cancel');
+          }
+        }  
       ]
     });
 
     await alert.present();
   };
+  
 
-  getGroups(){
+  getGroupForUsername(){
 
     return new Promise( (resolve, reject) => {
-      this.httpService.request('GET', 'get-all-groups').subscribe( res => {
+      this.httpService.request('GET', 'get-groups?username='+this.userService.getUser().username+'&schoolId='+this.currentSchool.code).subscribe( res => {
         if(res) {
           resolve(res.message);
         } else {
@@ -292,32 +272,9 @@ export class ManageGroupPage implements OnInit {
   
   }
 
-  
-
-  getGroupForUsername(){
-
-    return new Promise( (resolve, reject) => {
-      this.storageService.getItem('user').then( res => {
-        console.log('ppppppppppp');
-        console.log(res);
-        console.log('ppppppppppp');
-        this.httpService.request('GET', 'get-group-for-username?username='+res['username']+'&schoolId='+this.currentSchool.code).subscribe( res => {
-          if(res) {
-            resolve(res.message);
-          } else {
-            reject('error getting groups');
-          }
-        });
-      }).catch( err => {
-        console.log(err);
-      });
-    })
-  
-  }
-
   getGroupStudents() {
     return new Promise( (resolve, reject) => {
-      this.httpService.request('GET', 'get-all-group-students').subscribe( res => {
+      this.httpService.request('GET', 'get-students?username='+this.userService.getUser().username+'&schoolId='+this.currentSchool.code).subscribe( res => {
         if(res) {
           resolve(res.message);
         } else {
@@ -331,71 +288,41 @@ export class ManageGroupPage implements OnInit {
     this.createGroupAlert();
   }
   
-  newGroupCreationg() {
-    console.log('hii');
-    this.storage.get('user').then( data => {
+  newGroupCreation() {
+    let $this = this;
 
-      if(this.saveGroupPayload.groupId === ''){
-        this.presentAlert();
-      } else {
-        if(data){
-          this.saveGroupPayload.createdAt =  ''+new Date()+'';
-          console.log(data.username);
-          this.saveGroupPayload.userName = data.username;
-          console.log(this.saveGroupPayload);
-          this.httpService.request('POST', 'save-group', this.saveGroupPayload).subscribe( res => {
-            console.log(res);
-            this.ngOnInit();
-          });
-        }
-      }
+    if($this.saveGroupPayload.groupName === ''){
+      $this.presentAlert();
+    } else {
 
-    });
+      $this.saveGroupPayload.createdAt =  ''+new Date()+'';
+      $this.saveGroupPayload.userName = this.userService.getUser().username;
+      $this.httpService.request('POST', 'save-group', $this.saveGroupPayload).subscribe( res => {
+        $this.getGroups();
+      });
+    
+    }
   }
 
   clearAddStudentToGroupPayload() {
     this.addStudentToGroupPayload.userName = '';
-    this.addStudentToGroupPayload.groupId = '';
-    this.addStudentToGroupPayload.studentIdToAdd = [];
-    this.addStudentToGroupPayload.studentIdToRemove = [];
+    this.addStudentToGroupPayload.groupId = null;
+    this.addStudentToGroupPayload.students = [];
     this.addStudentToGroupPayload.createdAt = '';
     
   }
 
-  addToGroup(groupId, studentIdToAdd, studentIdToRemove) {
-    console.log(groupId);
-    console.log(studentIdToAdd);
+  updateGroup(groupId, newStudents) {
+
     this.addStudentToGroupPayload.groupId = groupId;
-    this.addStudentToGroupPayload.studentIdToAdd = studentIdToAdd;
-    this.addStudentToGroupPayload.studentIdToRemove = studentIdToRemove;
-    console.log(this.userService.getUser().username);
+    this.addStudentToGroupPayload.students = newStudents;
     this.addStudentToGroupPayload.userName = this.userService.getUser().username;
     this.addStudentToGroupPayload.createdAt =  ''+new Date()+'';
-    this.addStudentToGroupPayload.school = this.currentSchool.code;
+    this.addStudentToGroupPayload.schoolId = this.currentSchool.code;
 
-    console.log(this.addStudentToGroupPayload);
-
-    this.httpService.request('POST', 'save-EstudianteGrupo-data', this.addStudentToGroupPayload).subscribe( res => {
-      console.log(res);
-      this.ngOnInit();
+    this.httpService.request('POST', 'update-group', this.addStudentToGroupPayload).subscribe( res => {
+      this.getGroups();
       this.clearAddStudentToGroupPayload();
-    });
-  }
-
-  removeStudentSelect() {
-    console.log(this.removeStudentFromGroupPayload.studentId);
-    // this.studentList.
-  }
-
-  getAllDistinctGroupIds() {
-    return new Promise( (resolve, reject) => {
-      this.httpService.request('GET', 'get-distinct-groupId').subscribe( res => {
-        if(res) {
-          resolve(res.message);
-        } else {
-          reject('no data recieved from get-distinct-groupId');
-        }
-      })
     });
   }
 
@@ -411,24 +338,23 @@ export class ManageGroupPage implements OnInit {
     });
   }
 
-  deleteGroupBtn(groupId) {
-    this.deleteGroupAlert(groupId);
+  deleteGroupBtn(groupId, groupName) {
+    this.deleteGroupAlert(groupId, groupName);
   }
 
 
-  async deleteGroupAlert(groupId) {
+  async deleteGroupAlert(groupId, groupName) {
     const alert = await this.alertController.create({
       header: 'Borrar grupo',
-      message: 'Estás seguro que quieres eliminar el grupo '+groupId+' ?',
+      message: 'Estás seguro que quieres eliminar el grupo '+groupName+' ?',
       buttons: [
         {
           text: 'Ok',
           handler: (alertData) => {
-            console.log(groupId);
             let groupDeletePayload = {groupId: groupId}
+            let $this = this;
             this.httpService.request('POST','delete-group-and-students-in-it', groupDeletePayload).subscribe( res => {
-              console.log(res);
-              this.ngOnInit();
+              $this.getGroups();
             });
           }
         },
@@ -461,10 +387,6 @@ export class ManageGroupPage implements OnInit {
         console.log(err);
       });
     }
-  }
-
-  somefunc() {
-    console.log('hi');
   }
 
 }

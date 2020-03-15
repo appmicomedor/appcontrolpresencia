@@ -32,16 +32,10 @@
   <ion-item-group *ngFor="let group of groupList;let i = index">
     <ion-item-divider>
       <ion-col size="7">
-        <ion-row (click)="rowClick(i, group.groupId)">
-          <ion-label><ion-icon *ngIf="!group.show" name="arrow-forward"></ion-icon><ion-icon *ngIf="group.show" name="arrow-down"></ion-icon>&nbsp;{{group.groupId}}</ion-label>
+        <ion-row (click)="rowClick(i, group.id)">
+          <ion-label><ion-icon *ngIf="!group.show" name="arrow-forward"></ion-icon><ion-icon *ngIf="group.show" name="arrow-down"></ion-icon>&nbsp;{{group.groupName}}</ion-label>
         </ion-row>
       </ion-col>
-      <!-- <ion-col>
-        <ion-row> 
-          <ion-button style="--color:#ffff;--background:#fd5e53;" (click)="deleteGroupBtn(group.groupId)" ><ion-icon name="trash"></ion-icon></ion-button>
-          <ion-button style="--color:#ffff;--background:#12cad6;" (click)="createBtnClick(group.groupId)" ><ion-icon name="add"></ion-icon></ion-button>
-        </ion-row>
-      </ion-col> -->
     </ion-item-divider>
     
     <div *ngIf="group.show">
