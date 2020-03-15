@@ -14,16 +14,22 @@ import { IonicStorageModule } from '@ionic/storage';
 import { UserService } from './provider/user.service';
 import { environment } from '../environments/environment';
 import { StudentNamePipe } from './pipes/student-name.pipe';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { DateFormatterPipe } from './pipes/date-formatter.pipe';
+import { DatePipe } from '@angular/common';
+
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, DateFormatterPipe],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, AuthModule, IonicStorageModule.forRoot()],
   providers: [
     StatusBar,
+    DatePipe,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    UserService
+    UserService,
+    OneSignal
   ],
   bootstrap: [AppComponent]
 })

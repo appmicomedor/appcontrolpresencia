@@ -3,6 +3,7 @@ import { UserService } from '../provider/user.service';
 import { AuthHttpService } from '../auth/auth-http.service';
 import { ToastController } from '@ionic/angular';
 import { Router, NavigationExtras } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class UploadViewPage implements OnInit {
   constructor(private httpService: AuthHttpService, 
     private userService: UserService, 
     public toastCtrl: ToastController,
+    private datePipe: DatePipe,
     private router: Router) {
       // this.ngxdataTable.messages.totalMessage="";
      }
@@ -50,7 +52,16 @@ export class UploadViewPage implements OnInit {
 
     this.httpService.request('GET','get-all-albaranes-list').subscribe( res => {
       console.log(res);
-      this.tableData = res.message;
+      this.tableData = res.message.map( mes => {
+        mes.date = mes.date.split('T')[0];
+        mes.fechaelaboracion = this.datePipe.transform(mes.fechaelaboracion.split('T')[0],'dd-MM-yyyy');
+        mes.fechaconsumo = this.datePipe.transform(mes.fechaconsumo.split('T')[0],'dd-MM-yyyy');
+        return mes;
+      });
+      // console.log(td);
+
+      // this.tableData = res.message;
+
     });
 
   }

@@ -6,6 +6,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserService } from '../provider/user.service';
 import { UtilService } from '../provider/util.service';
+import { StorageService } from '../auth/storage.service';
 
 @Component({
   selector: 'app-control',
@@ -36,7 +37,8 @@ export class ControlPage implements OnInit {
     private modalCtrl: ModalController,
     private location: Location,
     private utilService: UtilService,   
-    public toastCtrl: ToastController,     
+    public toastCtrl: ToastController,
+    private storageService: StorageService  
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -58,7 +60,9 @@ export class ControlPage implements OnInit {
 
   ngOnInit() {
 
-    this.getGroups().then( res => {
+    console.log(this.school);
+
+    this.getGroupForUsername().then( res => {
       this.groupList = res;      
       this.groupList.forEach(element => {
          element.show = false;
@@ -304,6 +308,24 @@ export class ControlPage implements OnInit {
   
   }
 
+  getGroupForUsername(){
+
+    return new Promise( (resolve, reject) => {
+      this.storageService.getItem('user').then( res => {
+        this.httpService.request('GET', 'get-group-for-username?username='+res['username']+'&schoolId='+this.school.code).subscribe( res => {
+          if(res) {
+            resolve(res.message);
+          } else {
+            reject('error getting groups');
+          }
+        });
+      }).catch( err => {
+        console.log(err);
+      });
+    })
+  
+  }
+
   studentListForClickedGroup:any = [];
   studentListForClickedGroupNew = [];
   displayStudentListForClickedGroupNew = [];
@@ -363,5 +385,9 @@ export class ControlPage implements OnInit {
     });
   }
 
+  ionViewWillEnter() {
+    // alert('check');
+    this.ngOnInit();
+  }
 
 }

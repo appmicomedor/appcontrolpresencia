@@ -6,6 +6,7 @@ import { AlertController } from '@ionic/angular';
 import { UserService } from '../provider/user.service';
 import { StudentNamePipe } from '../pipes/student-name.pipe';
 import { element } from 'protractor';
+import { StorageService } from '../auth/storage.service';
 
 @Component({
   selector: 'app-manage-group',
@@ -31,7 +32,8 @@ export class ManageGroupPage implements OnInit {
     groupId:'',
     studentIdToAdd:[],
     studentIdToRemove:[],
-    createdAt:''
+    createdAt:'',
+    school:''
   }
 
   removeStudentFromGroupPayload = {
@@ -58,7 +60,8 @@ export class ManageGroupPage implements OnInit {
     private httpService: AuthHttpService,
     private alertController: AlertController,
     private userService: UserService,
-    private studentPipe: StudentNamePipe
+    private studentPipe: StudentNamePipe,
+    private storageService: StorageService
   ) { 
     console.log(this.router.getCurrentNavigation().extras.state.studentList);
     console.log(this.router.getCurrentNavigation().extras.state.school.code);
@@ -68,11 +71,18 @@ export class ManageGroupPage implements OnInit {
     this.saveGroupPayload.currentSchoolId = this.router.getCurrentNavigation().extras.state.school.code;
     this.saveGroupPayload.createdAt, this.addStudentToGroupPayload.createdAt =  ''+new Date()+'';
 
+    console.log(this.currentSchool.code);
   }
 
   ngOnInit() {
 
-    this.getGroups().then( res => {
+    // this.getGroupForUsername();
+
+    this.getGroupForUsername().then( res => {
+      console.log('ooooooo');
+      console.log(res);
+      console.log('ooooooo');
+
       this.groupList = res;      
       this.groupList.forEach(element => {
          element.show = false;
@@ -238,7 +248,7 @@ export class ManageGroupPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Create Group',
       inputs: input.data,
-      message: 'Select/unselect students to add/remove.',
+      message: 'Marca o desmarca estudiantes para añadir o eliminar del grupo.',
       buttons: [
         {
           text: 'Ok',
@@ -277,6 +287,29 @@ export class ManageGroupPage implements OnInit {
         } else {
           reject('error getting groups');
         }
+      });
+    })
+  
+  }
+
+  
+
+  getGroupForUsername(){
+
+    return new Promise( (resolve, reject) => {
+      this.storageService.getItem('user').then( res => {
+        console.log('ppppppppppp');
+        console.log(res);
+        console.log('ppppppppppp');
+        this.httpService.request('GET', 'get-group-for-username?username='+res['username']+'&schoolId='+this.currentSchool.code).subscribe( res => {
+          if(res) {
+            resolve(res.message);
+          } else {
+            reject('error getting groups');
+          }
+        });
+      }).catch( err => {
+        console.log(err);
       });
     })
   
@@ -338,6 +371,7 @@ export class ManageGroupPage implements OnInit {
     console.log(this.userService.getUser().username);
     this.addStudentToGroupPayload.userName = this.userService.getUser().username;
     this.addStudentToGroupPayload.createdAt =  ''+new Date()+'';
+    this.addStudentToGroupPayload.school = this.currentSchool.code;
 
     console.log(this.addStudentToGroupPayload);
 
