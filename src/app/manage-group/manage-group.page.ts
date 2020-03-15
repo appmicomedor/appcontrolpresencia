@@ -73,12 +73,12 @@ export class ManageGroupPage implements OnInit {
     this.getGroups();
   }
 
-  getGroups() {
+  async getGroups() {
 
     // this.getGroupForUsername();
     let $this = this;
 
-    this.getGroupForUsername().then( res => {
+    await this.getGroupForUsername().then( res => {
 
       $this.groupList = res;      
       $this.groupList.forEach(element => {
@@ -90,7 +90,7 @@ export class ManageGroupPage implements OnInit {
       $this.groupList = [];
     });
 
-    this.getGroupStudents().then( suc => {
+    await this.getGroupStudents().then( suc => {
       var arr = [];
 
       $this.groupStudents = suc;
@@ -202,8 +202,6 @@ export class ManageGroupPage implements OnInit {
         });
 
         filteredGroupIdStudents.forEach( (elem, i) => {
-          console.log(elem.studentId);
-          console.log(this.studentPipe.transform(elem.studentId, this.studentList));
           input.data.push({name:"checkbox"+i,type: 'checkbox',label:this.studentPipe.transform(elem.studentId, this.studentList),value: '{"type":"checked","studentId":"'+elem.studentId+'"}',checked:true});
         });
 
