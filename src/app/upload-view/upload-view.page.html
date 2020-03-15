@@ -44,9 +44,9 @@
           </ng-template>
         </ngx-datatable-column> -->
 
-        <ngx-datatable-column prop="fechaelaboracion" [name]="fechaelaboracion" [flexGrow]="0.5">
+        <ngx-datatable-column prop="fechaelaboracion" [comparator]="compareDates" [name]="fechaelaboracion" [flexGrow]="0.5">
         </ngx-datatable-column>
-        <ngx-datatable-column prop="fechaconsumo" [name]="fechaconsumo" [flexGrow]="0.5">
+        <ngx-datatable-column prop="fechaconsumo" [comparator]="compareDates" [name]="fechaconsumo" [flexGrow]="0.5">
         </ngx-datatable-column>
         <ngx-datatable-column prop="fileName" [name]="fileName" [flexGrow]="1" >
         </ngx-datatable-column>

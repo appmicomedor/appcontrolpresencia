@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../provider/user.service';
 import { AuthHttpService } from '../auth/auth-http.service';
@@ -27,6 +28,7 @@ export class AlbaranesPage implements OnInit {
   queryDate;
 
   dateFmt: string;
+  loading: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,7 +36,8 @@ export class AlbaranesPage implements OnInit {
     private zone: NgZone,
     private userService: UserService,
     private authHttpService:AuthHttpService,
-    private utilService: UtilService,       
+    private utilService: UtilService,   
+    private loadingCtrl: LoadingController,    
   ) {
 
     this.route.queryParams.subscribe(params => {
@@ -42,8 +45,7 @@ export class AlbaranesPage implements OnInit {
         this.zone.run(() => {
 
           if(this.router.getCurrentNavigation().extras.state.id) {
-            alert('hi');
-            console.log(this.router.getCurrentNavigation().extras.state.id);
+
             this.authHttpService.request('GET', 'get-albaranes-for-id?id='+this.router.getCurrentNavigation().extras.state.id)
             .subscribe( res => {
               console.log(res.message);
@@ -56,8 +58,6 @@ export class AlbaranesPage implements OnInit {
               } catch {
                 this.filteredArray = [];
               }
-              console.log(this.filteredArray);
-              console.log(this.filteredArray[0]);
             });
           } else {
 
@@ -104,4 +104,12 @@ export class AlbaranesPage implements OnInit {
   ngOnInit() {
   }
 
+  async presentLoading() {
+  
+    this.loading = await this.loadingCtrl.create({
+      message: 'Cargando..',
+      spinner: 'crescent'
+    });
+    return await this.loading.present();
+  }  
 }

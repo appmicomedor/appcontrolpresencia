@@ -51,11 +51,15 @@ export class UploadViewPage implements OnInit {
   ngOnInit() {
 
     this.httpService.request('GET','get-all-albaranes-list').subscribe( res => {
-      console.log(res);
+      //console.log(res);
       this.tableData = res.message.map( mes => {
+
         mes.date = mes.date.split('T')[0];
-        mes.fechaelaboracion = this.datePipe.transform(mes.fechaelaboracion.split('T')[0],'dd-MM-yyyy');
-        mes.fechaconsumo = this.datePipe.transform(mes.fechaconsumo.split('T')[0],'dd-MM-yyyy');
+
+        if (mes.fechaelaboracion)
+          mes.fechaelaboracion = this.datePipe.transform(mes.fechaelaboracion.split('T')[0],'dd-MM-yyyy');
+
+        mes.fechaconsumo = this.datePipe.transform(mes.date.split('T')[0],'dd-MM-yyyy');
         return mes;
       });
       // console.log(td);
@@ -155,4 +159,37 @@ export class UploadViewPage implements OnInit {
     };
     this.router.navigate(['albaranes'], navigationExtras);
   }
+
+  compareDates(a, b): number {
+    if (a==null || a==''){
+      if (b==null || b==''){
+        return 0;
+      }
+      else {
+        return -1;
+      }
+    }
+    if (b==null || b==''){
+      return 1;
+    }
+    var a3 = a.split('-');
+    var b3 = b.split('-');
+    var da = new Date(a3[2], a3[1]-1, a3[0]).getTime();
+    var db = new Date(b3[2], b3[1]-1, b3[0]).getTime();
+    console.log('sorting reviewed');
+    console.log(a + ' ' + da);
+    console.log(b + ' ' + db);
+    if(da > db){
+      console.log('1');
+      return 1;
+    } else if(da < db){
+      console.log('-1');
+      return -1;
+    } else {
+      console.log('0');
+
+      return 0;
+    }
+  }
+
 }

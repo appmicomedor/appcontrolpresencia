@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class AuthHttpService {
 
   requestor: Requestor;
-  //api_domain = 'https://apptitular.micomedor.net:3000/';
-  api_domain = 'http://localhost:3000/';
+  api_domain = 'https://apptitular.micomedor.net:3000/';
+  //api_domain = 'http://localhost:3000/';
   httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
   constructor(
     public httpClient : HttpClient
