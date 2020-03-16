@@ -176,18 +176,12 @@ export class UploadViewPage implements OnInit {
     var b3 = b.split('-');
     var da = new Date(a3[2], a3[1]-1, a3[0]).getTime();
     var db = new Date(b3[2], b3[1]-1, b3[0]).getTime();
-    console.log('sorting reviewed');
-    console.log(a + ' ' + da);
-    console.log(b + ' ' + db);
+
     if(da > db){
-      console.log('1');
       return 1;
     } else if(da < db){
-      console.log('-1');
       return -1;
     } else {
-      console.log('0');
-
       return 0;
     }
   }

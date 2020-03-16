@@ -74,7 +74,7 @@
     </ion-card>
   </div>
 
-  <ion-content padding *ngIf="filteredArray?.length == 0">
+  <ion-content padding *ngIf="filteredArray?.length == 0 && !loading">
     <ion-grid style="height: 100%">
         <ion-row justify-content-center align-items-center style="height: 100%; flex-direction: column">
             <p style="color: #00584c;">No hay albaranes para la fecha seleccionada</p>

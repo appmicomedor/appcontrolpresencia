@@ -40,6 +40,8 @@ export class AlbaranesPage implements OnInit {
     private loadingCtrl: LoadingController,    
   ) {
 
+    this.presentLoading();
+
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.zone.run(() => {
@@ -48,10 +50,16 @@ export class AlbaranesPage implements OnInit {
 
             this.authHttpService.request('GET', 'get-albaranes-for-id?id='+this.router.getCurrentNavigation().extras.state.id)
             .subscribe( res => {
-              console.log(res.message);
+
               try {
                 res.message.forEach(element => {
+                  for (var i=0;i<element.length;i++){
+                    element[i].fechaconsumo.$t      = this.formatDate(element[i].fechaconsumo.$t);
+                    element[i].fechaelaboracion.$t  = this.formatDate(element[i].fechaelaboracion.$t);
+                  }
+
                   this.filteredArrayTemp.push(element);
+                  
                 });
 
                 this.filteredArray = this.filteredArrayTemp[0];
@@ -74,34 +82,40 @@ export class AlbaranesPage implements OnInit {
               this.queryDate = this.getAlbaranPayload.dbDate;
             }
 
-          this.dateFmt = this.utilService.presentDate(this.queryDate);
+            this.dateFmt = this.utilService.presentDate(this.queryDate);
 
-          this.authHttpService.request('GET','get_albaran?date='+this.queryDate+'&code='+this.getAlbaranPayload.code, this.getAlbaranPayload)
-          .subscribe( res => {
-            console.log(res);
-            try {
-              res.message.forEach(element => {
-                this.filteredArray.push(element);
-              });
-            } catch {
-              this.filteredArray = [];
-            }          
-          });
+            this.authHttpService.request('GET','get_albaran?date='+this.queryDate+'&code='+this.getAlbaranPayload.code, this.getAlbaranPayload)
+            .subscribe( res => {
+
+              try {
+                res.message.forEach(element => {
+                  this.filteredArray.push(element);
+                });
+              } catch {
+                this.filteredArray = [];
+              }          
+            });
 
           }
-
-          
-
         });
       }
       else{
-        console.log("no");
+        console.log("ERROR no state");
       }
     });
 
-   }
+  }
+
 
   ngOnInit() {
+    
+  }
+
+  ionViewDidEnter() {
+    if (this.loading){
+      this.loadingCtrl.dismiss();   
+      this.loading = null;
+    }
   }
 
   async presentLoading() {
@@ -112,4 +126,9 @@ export class AlbaranesPage implements OnInit {
     });
     return await this.loading.present();
   }  
+
+  formatDate(dateYMD){
+    let d = dateYMD.split('-');
+    return d[2] + '-' + d[1] + '-' + d[0];
+  }
 }
