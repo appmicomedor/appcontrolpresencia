@@ -68,9 +68,6 @@ export class ControlPage implements OnInit {
          element.show = false;
       });
 
-      console.log(this.groupList);
-      console.log(this.displayingControl);
-
     }).catch( err => {
       console.log(err);
       this.groupList = [];
@@ -82,11 +79,6 @@ export class ControlPage implements OnInit {
     this.getAllStudentsWithGroup().then( res => {
       this.studentIdWithGroup = res;
 
-      if(this.displayingControl.length === 0) {
-        alert('ho');
-        // this.timeForSettimeOut = 3;
-      }
-
       // changed here from control to displayingcontrol
         this.studentIdWithGroup.forEach( ele => {
           this.displayingControl.forEach( el => {
@@ -94,7 +86,6 @@ export class ControlPage implements OnInit {
               this.studentsWithGroup.push(el);
             }
           })
-          console.log(ele);
         });
 
         // control to display control to work search
@@ -104,9 +95,7 @@ export class ControlPage implements OnInit {
 
         this.studentsWithoutGroupDisplayList = this.studentsWithoutGroup;
 
-        console.log(this.studentsWithGroup);
-        console.log(this.studentsWithoutGroup);
-
+        
 
     }).catch(err => {
       this.studentIdWithGroup = [];
@@ -130,8 +119,6 @@ export class ControlPage implements OnInit {
       if (!response['error']) {   
         this.control = response['data'];
 
-        console.log(this.control);
-
         // Sort by name
         this.control.sort(function (a, b) {
           let name_a = a['student_name'].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -139,9 +126,8 @@ export class ControlPage implements OnInit {
           if(name_a < name_b) { return -1; }
           if(name_a > name_b) { return 1; }
           return 0;
-      });
+        });
 
-        console.log(this.control);
 
         let dia = 'dia' + this.date.getDate();
 
@@ -168,7 +154,6 @@ export class ControlPage implements OnInit {
         }
 
         this.displayingControl = this.control;
-        console.log(this.displayingControl);
         this.getStudentsWithoutGroup();
       }
     });
@@ -176,10 +161,6 @@ export class ControlPage implements OnInit {
 
   changeControl(student, index){
     if (student.asistencia=='A' || student.asistencia=='J' || student.asistencia=='F'){
-
-      console.log('student isss');
-      console.log(student);
-      console.log('student isss');
 
       let daym = this.date.getDate();
       let dayi = 'dia' + String(daym);  
@@ -263,21 +244,18 @@ export class ControlPage implements OnInit {
       let newArr = this.control.filter( (student) => {
         return student.student_name.toLowerCase().includes(event.toLowerCase());
       } );
-      console.log(newArr);
       this.displayingControl = newArr;
 
       // search for students without group
       let newArrStudentsWithoutGroup = this.studentsWithoutGroup.filter( (student) => {
         return student.student_name.toLowerCase().includes(event.toLowerCase());
       } );
-      console.log(newArrStudentsWithoutGroup);
       this.studentsWithoutGroupDisplayList = newArrStudentsWithoutGroup;
 
       // search for studentListForClickedGroupNew
       let newArrStudentListForClickedGroupNew = this.studentListForClickedGroupNew.filter( (student) => {
         return student.student_name.toLowerCase().includes(event.toLowerCase());
       } );
-      console.log(newArrStudentsWithoutGroup);
       this.displayStudentListForClickedGroupNew = newArrStudentListForClickedGroupNew;
 
     }
@@ -323,7 +301,6 @@ export class ControlPage implements OnInit {
       this.studentListForClickedGroupNew = [];
       this.getAllStudentIdsForGroupId(groupid).then( res => {
         this.studentListForClickedGroup = res;
-        console.log(this.studentListForClickedGroup);
         
         this.displayingControl.forEach(element => {
           this.studentListForClickedGroup.forEach( ele => {
@@ -333,7 +310,6 @@ export class ControlPage implements OnInit {
           });
         });
 
-        console.log(this.studentListForClickedGroupNew);
         this.displayStudentListForClickedGroupNew = this.studentListForClickedGroupNew;
       }).catch( err => {
         console.log(err);
