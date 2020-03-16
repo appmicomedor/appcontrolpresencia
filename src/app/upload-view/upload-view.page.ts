@@ -13,40 +13,23 @@ import { DatePipe } from '@angular/common';
 })
 export class UploadViewPage implements OnInit {
 
+  tableData: any = [];
+  fechaelaboracion: any;
+  fechaconsumo: any;
+  fileName: any;
+  companyId: any;
+  auto: any;
+  
+
   constructor(private httpService: AuthHttpService, 
     private userService: UserService, 
     public toastCtrl: ToastController,
     private datePipe: DatePipe,
     private router: Router) {
       // this.ngxdataTable.messages.totalMessage="";
-     }
+  }
 
-  jsonData = [
-    {
-      "name": "Ethel Price",
-      "gender": "female",
-      "company": "Johnson, Johnson and Partners, LLC CMP DDC",
-      "age": 22
-    },
-    {
-      "name": "Claudine Neal",
-      "gender": "female",
-      "company": "Sealoud",
-      "age": 55
-    },
-    {
-      "name": "Beryl Rice",
-      "gender": "female",
-      "company": "Velity",
-      "age": 67
-    },
-    {
-      "name": "Wilder Gonzales",
-      "gender": "male",
-      "company": "Geekko"
-    }];
 
-    tableData: any = [];
 
   ngOnInit() {
 
